@@ -100,46 +100,27 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       schema: {
         tags: ['User'],
-        body: Type.Object({
-          fullName: Type.Optional(Type.String()),
-          email: Type.Optional(Type.String()),
-          userDetails: Type.Optional(userDetailSchema)
-        }),
+        consumes: ['multipart/form-data'],
         response: {
           200: userResponseSchema
         }
       },
+      preHandler: upload.single('profilePic'),
       onRequest: fastify.authenticate
     },
     userControllers.editProfile.bind(userControllers)
-  )
-  // fastify.get(
-  //   '/enrolled-courses/:userId',
-  //   {
-  //     schema: {
-  //       tags: ['User'],
-  //       params: getEnrolledCourseSchema,
-  //       response: {
-  //         200: Type.Object({
-  //           courses: Type.Array(
-  //             Type.Object({
-  //               id: Type.String(),
-  //               name: Type.String(),
-  //               description: Type.Optional(Type.String()),
-  //               createdAt: Type.String({ format: 'date-time' })
-  //             })
-  //           ),
-  //           total: Type.Number(),
-  //           page: Type.Number(),
-  //           limit: Type.Number(),
-  //           totalPages: Type.Number(),
-  //           hasPreviousPage: Type.Boolean(),
-  //           hasNextPage: Type.Boolean()
-  //         })
-  //       }
-  //     },
-  //     onRequest: fastify.authenticate
-  //   },
-  //   userControllers.getUserCourses.bind(userControllers)
-  // )
+  ),
+    fastify.get(
+      '/user-details',
+      {
+        schema: {
+          tags: ['User'],
+          response: {
+            201: userDetailSchema
+          }
+        },
+        onRequest: fastify.authenticate
+      },
+      userControllers.getUserDetails.bind(userControllers)
+    )
 }

@@ -98,6 +98,18 @@ export interface UserDetail {
   userId: string; // Relation field
 }
 
+export interface UserUpdateInput {
+  phoneNumber?: string; // Optional field
+  address?: string; // Optional field
+  motherName?: string; // Optional field
+  fatherName?: string; // Optional field
+  profilePic?: string; // Optional field
+  parentContact?: string; // Optional field
+  schoolCollegeName?: string; // Optional field
+  email: string;
+  fullName: string;
+}
+
 export interface BaseUser {
   id: string;
   fullName: string;

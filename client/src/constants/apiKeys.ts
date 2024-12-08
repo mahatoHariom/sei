@@ -1,3 +1,5 @@
+// import { updateUser } from "@/store/slices/userSlice";
+
 export const apiKeys = {
   login: "login",
   logout: "logout",
@@ -9,4 +11,5 @@ export const apiKeys = {
   enrollInSubject: "enrollInSubject",
   getEnrolledCourses: "getEnrolledCourses",
   getUserDetails: "getUserDetails",
+  updateUser: "updateUser",
 };
