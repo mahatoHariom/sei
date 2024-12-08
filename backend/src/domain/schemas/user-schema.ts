@@ -1,3 +1,4 @@
+// user-schemas.ts
 import { Type } from '@sinclair/typebox'
 
 export const userDetailSchema = Type.Object({
@@ -6,7 +7,8 @@ export const userDetailSchema = Type.Object({
   motherName: Type.Optional(Type.String()),
   fatherName: Type.Optional(Type.String()),
   parentContact: Type.Optional(Type.String()),
-  schoolCollegeName: Type.Optional(Type.String())
+  schoolCollegeName: Type.Optional(Type.String()),
+  profilePic: Type.Optional(Type.String({ format: 'binary' }))
 })
 
 export const changePasswordInputSchema = Type.Object({
@@ -48,6 +50,7 @@ export const userResponseSchema = Type.Intersect([
   })
 ])
 
+// Export the schemas as types
 export type GetEnrolledCourseInput = typeof getEnrolledCourseSchema
 export type ChangePasswordInput = typeof changePasswordInputSchema
 export type CreateUserDetailInput = typeof userDetailSchema

@@ -3,7 +3,7 @@ import api from "@/lib/axios-instance";
 import { CompleteProfileFormData } from "@/schema/users/complete-profile-schema";
 import { LoginFormData } from "@/schema/users/login-schema";
 import { SignUpFormData } from "@/schema/users/signup-schema";
-import { BaseUser, User } from "@/types";
+import { BaseUser, User, UserDetail } from "@/types";
 import { GetUserCoursesResponse } from "@/types/subjects";
 
 import { AxiosResponse } from "axios";
@@ -29,13 +29,16 @@ export async function logoutUser() {
   return response.data;
 }
 export async function completeProfile(data: CompleteProfileFormData) {
-  const response = await api.post("/user/complete-profile", data);
+  const response = await api.post("/user/complete-profile", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 }
 
-export async function getProfile(): Promise<BaseUser> {
-  const response = await api.get<User>("/auth/profile");
-  console.log(response, "pose");
+export async function getProfile(): Promise<UserDetail> {
+  const response = await api.get<UserDetail>("/user/user-details");
   return response.data;
 }
 

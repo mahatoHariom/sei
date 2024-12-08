@@ -8,4 +8,5 @@ export const apiKeys = {
   getAllSubjects: "getAllSubjects",
   enrollInSubject: "enrollInSubject",
   getEnrolledCourses: "getEnrolledCourses",
+  getUserDetails: "getUserDetails",
 };

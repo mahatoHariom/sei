@@ -6,7 +6,9 @@ import { loadEnvironment } from './infrastructure/environment'
 import { registerPlugins } from './infrastructure/plugins'
 import { registerMiddlewares } from './infrastructure/middlewares'
 import { registerRoutes } from './infrastructure/routes'
-
+import multer from 'fastify-multer'
+import formBody from '@fastify/formbody'
+import multipart from '@fastify/multipart'
 /**
  * Creates and configures the Fastify application
  */
@@ -36,7 +38,16 @@ const createApp = async (): Promise<FastifyInstance> => {
     // Decorate app with DI container
     app.decorate('container', container)
 
-    // Register all routes
+    await app.register(formBody)
+    app.register(multipart, {
+      limits: {
+        fieldNameSize: 100,
+        fieldSize: 1000000,
+        fields: 10,
+        fileSize: 30 * 1024 * 1024,
+        files: 1
+      }
+    })
     await registerRoutes(app)
 
     // Set global error handler

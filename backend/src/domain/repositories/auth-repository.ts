@@ -1,4 +1,4 @@
-import { Prisma, User } from '@prisma/client'
+import { Prisma, User, UserDetail } from '@prisma/client'
 import { injectable } from 'inversify'
 import { IAuthRepository } from '../interfaces/auth-interface'
 
@@ -28,5 +28,12 @@ export class PrismaAuthRepository implements IAuthRepository {
         userDetail: true
       }
     })
+  }
+  async getUserDetails(id: string): Promise<UserDetail | null> {
+    const data = await this.prisma.userDetail.findUnique({
+      where: { userId: id }
+    })
+    console.log(data, 'yop')
+    return data
   }
 }

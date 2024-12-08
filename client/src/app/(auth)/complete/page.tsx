@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 // import Cookies from "js-cookie";
@@ -22,16 +23,15 @@ const CompleteProfile = () => {
   const onSubmit = async (data: CompleteProfileFormData) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      if (key !== "profilePic") {
+      if (key === "profilePic" && value instanceof File) {
+        formData.append(key, value);
+      } else if (key !== "profilePic") {
         formData.append(key, value as string);
       }
     });
-    if (data.profilePic instanceof File) {
-      formData.append("profilePic", data.profilePic);
-    }
-    completeProfile(formData as CompleteProfileFormData, {
+
+    completeProfile(formData as any, {
       onSuccess: async (data) => {
-        debugger;
         Cookies.set("accessToken", data.accessToken);
         Cookies.set("user", JSON.stringify(data.updatedUser));
         Cookies.set("refreshToken", data.refreshToken);

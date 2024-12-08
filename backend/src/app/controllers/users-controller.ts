@@ -8,6 +8,7 @@ import { UserServices } from '../services/user-service'
 import { Messages, StatusCode } from '@/domain/constants/messages'
 import { generateJsonWebToken, generateRefreshToken } from '@/domain/utils/jwt'
 import { SubjectService } from '../services/subject-service'
+import { UserDetail } from '@prisma/client'
 
 @injectable()
 export class UserControllers {
@@ -100,5 +101,42 @@ export class UserControllers {
       hasPreviousPage,
       hasNextPage
     })
+  }
+  async editProfile(
+    request: FastifyRequest<{
+      Body: {
+        fullName?: string
+        email?: string
+        userDetails?: Partial<CreateUserDetailInput>
+      }
+    }>,
+    reply: FastifyReply
+  ) {
+    const { fullName, email, userDetails } = request.body
+    const userId = request.user?.id
+
+    if (!userId) {
+      throw new ApiError(Messages.INVALID_CREDENTIAL, StatusCode.Unauthorized)
+    }
+
+    // Update user base info
+    const updatedUser = await this.userServices.updateUserProfile(userId, { fullName, email })
+
+    // Update user details if provided
+    if (userDetails) {
+      await this.userServices.updateUserDetails(userId, userDetails)
+    }
+
+    return reply.status(200).send(updatedUser)
+  }
+
+  async getUserDetails(request: FastifyRequest, reply: FastifyReply) {
+    const isUser = await this.authRepository.findById(request.user.id)
+    if (!isUser) {
+      throw new ApiError(Messages.USER_NOT_FOUND, StatusCode.Unauthorized)
+    }
+    const details = await this.authRepository.getUserDetails(request.user.id)
+
+    return reply.status(200).send(details)
   }
 }

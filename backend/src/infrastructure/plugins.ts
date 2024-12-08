@@ -6,16 +6,11 @@ import helmet from '@fastify/helmet'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
 import rateLimit from '@fastify/rate-limit'
-import multipart from '@fastify/multipart'
-import formBody from '@fastify/formbody'
+
 import { swaggerUiOptions } from './config/swagger'
 // import { swaggerUiOptions } from '../config/swagger'
 
 export async function registerPlugins(app: FastifyInstance) {
-  // Parse plugins
-  await app.register(multipart)
-  await app.register(formBody)
-
   // Security plugins
   await app.register(cors, {
     credentials: true,

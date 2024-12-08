@@ -8,6 +8,5 @@ export const useGetProfile = () => {
   return useQuery({
     queryKey: [apiKeys.getProfile],
     queryFn: getProfile,
-    // enabled: false,
   });
 };

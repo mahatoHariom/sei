@@ -4,7 +4,7 @@ import { TYPES } from '@/types'
 
 import { CreateUserDetailInput } from '@/domain/schemas/user-schema'
 import { PrismaUserRepository } from '@/domain/repositories/user-repository'
-import { User } from '@prisma/client'
+import { User, UserDetail } from '@prisma/client'
 
 @injectable()
 export class UserServices {
@@ -15,5 +15,13 @@ export class UserServices {
   }
   async changePassword(userId: string, newPassword: string): Promise<User> {
     return this.userRepository.changePassword(userId, newPassword)
+  }
+
+  async updateUserProfile(userId: string, data: { fullName?: string; email?: string }): Promise<User> {
+    return await this.userRepository.updateUserProfile(userId, data)
+  }
+
+  async updateUserDetails(userId: string, data: Partial<CreateUserDetailInput>): Promise<UserDetail> {
+    return await this.userRepository.updateUserDetails(userId, data)
   }
 }
