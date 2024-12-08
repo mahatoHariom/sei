@@ -1,0 +1,51 @@
+name: Deploy to VPS
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+#     steps:
+#       # Checkout the repo
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       # Set up Node.js
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: '18'
+
+#       # Install dependencies
+#       - name: Install dependencies
+#         run: npm install --frozen-lockfile
+
+#       # Build the app
+#       - name: Build the app
+#         run: npm run build
+
+#       # Package the app into a Docker image
+#       - name: Build Docker image
+#         run: docker build -t my-nextjs-app .
+
+#       # Push Docker image to a registry (e.g., DockerHub, GitHub Packages)
+#       - name: Log in to DockerHub
+#         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+#       - name: Push Docker image
+#         run: docker tag my-nextjs-app ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
+#         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
+
+#       # SSH into the VPS and deploy the app
+#       - name: SSH into VPS and deploy
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.VPS_HOST }}
+#           username: ${{ secrets.VPS_USER }}
+#           password: ${{ secrets.VPS_PASSWORD }}
+#           script: |
+#             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
+#             docker stop my-nextjs-app || true
+#             docker rm my-nextjs-app || true
+#             docker run -d -p 80:3000 --name my-nextjs-app ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
