@@ -27,9 +27,9 @@ const LoginPage = () => {
     loginUser(data, {
       onSuccess: (data) => {
         router.push(routesPath.home);
-        // debugger;
+
         Cookies.set("accessToken", data.accessToken);
-        Cookies.set("user", JSON.stringify(data.user)); // Set user cookie
+        Cookies.set("user", JSON.stringify(data.user))
         Cookies.set("refreshToken", data.refreshToken);
         dispatch(setUser(data?.user as BaseUser));
         toast.success(Messages.login.success);
@@ -64,6 +64,7 @@ const LoginPage = () => {
               <FormFieldWrapper
                 name="password"
                 label="Password"
+                type="password"
                 placeholder="Enter your password..."
                 control={control}
               />

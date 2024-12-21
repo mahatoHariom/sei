@@ -15,6 +15,7 @@ interface FormFieldWrapperProps<T extends FieldValues> {
   control: Control<T>;
   type?: string;
   accept?: string;
+  disabled?: boolean;
 }
 
 export const FormFieldWrapper = <T extends FieldValues>({
@@ -24,6 +25,7 @@ export const FormFieldWrapper = <T extends FieldValues>({
   control,
   type = "text",
   accept,
+  disabled,
 }: FormFieldWrapperProps<T>) => (
   <FormField
     control={control}
@@ -37,6 +39,7 @@ export const FormFieldWrapper = <T extends FieldValues>({
             placeholder={placeholder}
             accept={accept}
             {...field}
+            disabled={disabled}
             // Remove `value` when `type` is `file`
             value={type === "file" ? undefined : field.value}
             onChange={(e) => {

@@ -5,7 +5,9 @@ export const Messages = {
   PAYMENT_FAILED: 'Payment failed',
   TOKEN_NOT_FOUND: 'Token not found',
   INVALID_OR_TOKEN_EXPIRES: 'Invalid or token expired',
-  PASSWORD_NOT_MATCHED: 'Password not matched with our database'
+  PASSWORD_NOT_MATCHED: 'Password not matched with our database',
+  USER_NOT_AUTHENTICATED: 'User not authenticated',
+  FORBIDDEN_ACCESS: 'Forbidden access'
 }
 
 export enum StatusCode {

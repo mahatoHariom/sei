@@ -16,6 +16,10 @@ import { SubjectController } from '@/app/controllers/subject-controller'
 import { SubjectService } from '@/app/services/subject-service'
 import { ISubjectRepository } from '@/domain/interfaces/subject.interface'
 import { PrismaSubjectRepository } from '@/domain/repositories/subject-repository'
+import { AdminController } from '@/app/controllers/admin-controller'
+import { AdminService } from '@/app/services/admin-service'
+import { IAdminRepository } from '@/domain/interfaces/admin.interface'
+import { PrismaAdminRepository } from '@/domain/repositories/admin-repository'
 
 const container = new Container()
 
@@ -46,5 +50,13 @@ container.bind<SubjectController>(TYPES.SubjectController).to(SubjectController)
 container.bind<SubjectService>(TYPES.SubjectService).to(SubjectService).inSingletonScope()
 
 container.bind<ISubjectRepository>(TYPES.ISubjectRepository).to(PrismaSubjectRepository).inSingletonScope()
+
+// Admin
+
+container.bind<AdminController>(TYPES.AdminController).to(AdminController).inSingletonScope()
+
+container.bind<AdminService>(TYPES.AdminService).to(AdminService).inSingletonScope()
+
+container.bind<IAdminRepository>(TYPES.IAdminRepository).to(PrismaAdminRepository).inSingletonScope()
 
 export { container }

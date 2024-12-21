@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
-import { toast } from "sonner";
-import { handleError } from "@/helpers/handle-error";
+// import { toast } from "sonner";
+// import { handleError } from "@/helpers/handle-error";
 import { useSelector } from "react-redux";
 import { FormWrapper } from "@/components/global/form-wrapper";
 import { FormFieldWrapper } from "@/components/global/form-field-wrapper";
-import { Button } from "@/components/ui/button";
 import { RootState } from "@/store/store";
-import { useUpdateProfile } from "@/hooks/users/user-update-profile";
+// import { useUpdateProfile } from "@/hooks/users/user-update-profile";
 import {
   UserUpdateInput,
   userUpdateSchema,
@@ -26,9 +25,9 @@ const UserProfilePage = () => {
     profilePic,
   } = useSelector((state: RootState) => state.userDetail);
 
-  const { mutate: updateProfile, isPending } = useUpdateProfile();
+  // const { mutate: updateProfile } = useUpdateProfile();
 
-  const onSubmit = (data: UserUpdateInput, reset: () => void) => {
+  const onSubmit = (data: UserUpdateInput) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (key === "profilePic" && value instanceof File) {
@@ -38,22 +37,22 @@ const UserProfilePage = () => {
       }
     });
 
-    updateProfile(formData as any, {
-      onSuccess: () => {
-        toast.success("Profile updated successfully!");
-        reset();
-      },
-      onError: handleError,
-    });
+    // updateProfile(formData as any, {
+    //   onSuccess: () => {
+    //     toast.success("Profile updated successfully!");
+    //     reset();
+    //   },
+    // onError: handleError,
+    // });
   };
 
   return (
-    <div className="p-6 lg:p-12 w-1/2 justify-center mx-auto">
-      <h2 className="text-3xl font-bold mb-4">Edit Profile</h2>
-      <p className="text-gray-600 mb-6">
-        Update your account details by filling out the form below.
+    <div className="p-6 lg:p-12 w-3/4 justify-center mx-auto">
+      {/* <h2 className="text-3xl font-bold mb-4">Edit Profile</h2> */}
+      <p className="text-red-600 mb-6 flex items-center">
+        * Ask admin to edit details
       </p>
-      <div className="max-w-lg">
+      <div className="max-w-3xl">
         <FormWrapper
           defaultValues={{
             email: email,
@@ -69,13 +68,14 @@ const UserProfilePage = () => {
           validationSchema={userUpdateSchema}
           onSubmit={onSubmit}
         >
-          {({ control, isValid }) => (
-            <div className="flex flex-col gap-4 w-full">
+          {({ control }) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
               <FormFieldWrapper
                 name="fullName"
                 label="Full Name"
                 placeholder="Enter your full name..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="email"
@@ -83,58 +83,50 @@ const UserProfilePage = () => {
                 placeholder="Enter your email..."
                 type="email"
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="phoneNumber"
                 label="Phone Number"
                 placeholder="Enter your phone number..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="address"
                 label="Address"
                 placeholder="Enter your address..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="fatherName"
                 label="Father's Name"
                 placeholder="Enter your father's name..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="motherName"
                 label="Mother's Name"
                 placeholder="Enter your mother's name..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="schoolCollegeName"
                 label="School/College Name"
                 placeholder="Enter school or college name..."
                 control={control}
+                disabled
               />
               <FormFieldWrapper
                 name="parentContact"
                 label="Parent Contact"
                 placeholder="Enter parent's contact..."
                 control={control}
+                disabled
               />
-              <FormFieldWrapper
-                name="profilePic"
-                label="Profile Picture"
-                type="file"
-                accept="image/*"
-                control={control}
-              />
-              <Button
-                type="submit"
-                disabled={!isValid}
-                loading={isPending}
-                className="mt-4"
-              >
-                Update Profile
-              </Button>
             </div>
           )}
         </FormWrapper>

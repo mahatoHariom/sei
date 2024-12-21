@@ -12,6 +12,8 @@ import { RootState } from "@/store/store";
 import { Messages } from "@/constants/messages";
 import queryClient from "@/lib/query-client";
 import { apiKeys } from "@/constants/apiKeys";
+import Cookies from "js-cookie";
+import { redirect } from "next/navigation";
 
 const capitalizeTitle = (title: string) => {
   return title
@@ -26,6 +28,12 @@ export const CoursesSection = () => {
   const { id: userId } = useSelector((state: RootState) => state.user);
   if (isLoading) {
     return <p className="text-center text-lg">Loading courses...</p>;
+  }
+
+  const token = Cookies.get("accessToken");
+
+  if (!token) {
+    redirect("/login");
   }
 
   if (isError) {

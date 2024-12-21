@@ -10,7 +10,6 @@ export class SubjectController {
 
   async getAllSubjects(request: FastifyRequest, reply: FastifyReply): Promise<Subject[]> {
     const subjects = await this.subjectService.getAllSubjects()
-
     return reply.status(200).send(subjects)
   }
 }

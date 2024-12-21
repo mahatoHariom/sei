@@ -1,3 +1,6 @@
+import { AdminController } from '@/app/controllers/admin-controller'
+import { AdminService } from '@/app/services/admin-service'
+
 export const TYPES = {
   AuthController: Symbol.for('AuthController'),
 
@@ -21,7 +24,12 @@ export const TYPES = {
   ISubjectRepository: Symbol.for('ISubjectRepository'),
   PrismaSubjectRepository: Symbol.for('PrismaSubjectRepository'),
 
-  //
+  //Admin
+
+  AdminController: Symbol.for('AdminController'),
+  AdminService: Symbol.for('AdminService'),
+  IAdminRepository: Symbol.for('IAdminRepository'),
+  PrismaAdminRepository: Symbol.for('PrismaAdminRepository'),
 
   PrismaClient: Symbol.for('PrismaClient'),
   PrismaService: Symbol.for('PrismaService')

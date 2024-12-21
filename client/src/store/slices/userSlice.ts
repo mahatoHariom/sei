@@ -21,10 +21,9 @@ const userSlice = createSlice({
       return action.payload;
     },
 
-    clearUser: () => {
-      return initialState;
+    clearUser: (state) => {
+      Object.assign(state, initialState);
     },
-
     updateUser: (
       state,
       action: PayloadAction<Partial<typeof initialState>>

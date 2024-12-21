@@ -16,6 +16,7 @@ declare module 'fastify' {
   }
   export interface FastifyInstance {
     authenticate: any
+    CheckAdminRole: any
     multer: any
     readonly zod: FastifyZod<typeof models>
   }

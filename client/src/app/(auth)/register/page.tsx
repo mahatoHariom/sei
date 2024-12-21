@@ -63,12 +63,14 @@ const SignUpForm = () => {
                 <FormFieldWrapper
                   name="password"
                   label="Password"
+                  type="password"
                   placeholder="Enter your password..."
                   control={control}
                 />
                 <FormFieldWrapper
                   name="confirmPassword"
                   label="Confirm Password"
+                  type="password"
                   placeholder="Confirm your password..."
                   control={control}
                 />

@@ -106,7 +106,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
         }
       },
       preHandler: upload.single('profilePic'),
-      onRequest: fastify.authenticate
+      onRequest: [fastify.authenticate]
     },
     userControllers.editProfile.bind(userControllers)
   ),
