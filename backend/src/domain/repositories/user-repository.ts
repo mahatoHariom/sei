@@ -17,17 +17,18 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
-  async completeProfile(data: CreateUserDetailInput, userId: string): Promise<User> {
-    console.log('data', data)
-    await this.prisma.userDetail.create({
-      data: {
-        address: data.address,
-        fatherName: data.fatherName,
-        motherName: data.motherName,
-        phoneNumber: data.phoneNumber,
-        parentContact: data.parentContact,
-        schoolCollegeName: data.schoolCollegeName,
+  async completeProfile(data: CreateUserDetailInput & { profilePicture?: string }, userId: string): Promise<User> {
+    const { profilePicture, ...userDetails } = data
+    await this.prisma.userDetail.upsert({
+      where: { userId },
+      create: {
+        ...userDetails,
+        profilePic: profilePicture,
         userId
+      },
+      update: {
+        ...userDetails,
+        profilePic: profilePicture
       }
     })
 

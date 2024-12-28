@@ -21,6 +21,7 @@ export class UserServices {
     return await this.userRepository.updateUserProfile(userId, data)
   }
 
+
   async updateUserDetails(userId: string, data: Partial<CreateUserDetailInput>): Promise<UserDetail> {
     return await this.userRepository.updateUserDetails(userId, data)
   }

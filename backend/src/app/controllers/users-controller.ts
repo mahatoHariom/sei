@@ -26,6 +26,10 @@ export class UserControllers {
       throw new ApiError(Messages.INVALID_CREDENTIAL, StatusCode.Unauthorized)
     }
 
+    if (request.uploadedFile?.filename) {
+      data.profilePicture = request.uploadedFile.filename
+    }
+
     const updatedUser = await this.userServices.completeProfile(data, user.id)
     const refreshToken = await generateRefreshToken(updatedUser)
     const accessToken = await generateJsonWebToken(updatedUser)
