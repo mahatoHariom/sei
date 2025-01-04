@@ -1,8 +1,25 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prefer-const */
 import { NextRequest, NextResponse } from "next/server";
 
-const isPublicPage = (path: string): boolean =>
-  ["/login", "/register"].includes(path);
+// Define public and protected routes
+const publicRoutes = ["/login", "/register", "/"];
+const protectedRoutes = [
+  "/course",
+  "/contact",
+  "/user/dashboard",
+  "/admin/dashboard",
+];
+
+const isPublicRoute = (path: string): boolean => {
+  // Check if the path exactly matches a public route or starts with one
+  return publicRoutes.some((route) => path === route || path.startsWith(route));
+};
+
+const isProtectedRoute = (path: string): boolean => {
+  // Check if the path starts with any of the protected routes
+  return protectedRoutes.some((route) => path.startsWith(route));
+};
 
 const redirectTo = (path: string, request: NextRequest): NextResponse => {
   const redirectResponse = NextResponse.redirect(new URL(path, request.url));
@@ -12,8 +29,6 @@ const redirectTo = (path: string, request: NextRequest): NextResponse => {
 
 export function middleware(request: NextRequest): NextResponse {
   const userCookie = request.cookies.get("user")?.value;
-
-  console.log(request.cookies, "all cook");
   let user = null;
 
   // Parse user cookie if it exists
@@ -32,7 +47,7 @@ export function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
 
   // Redirect unauthenticated users trying to access protected routes
-  if (!user && !isPublicPage(pathname)) {
+  if (!user && isProtectedRoute(pathname)) {
     return redirectTo("/login", request);
   }
 
@@ -41,13 +56,13 @@ export function middleware(request: NextRequest): NextResponse {
     return redirectTo("/", request);
   }
 
-  // Redirect unverified users trying to access the home page to "/complete"
-  if (user && !user.isVerified && pathname === "/") {
+  // Redirect unverified users trying to access protected routes to "/complete"
+  if (user && !user.isVerified && isProtectedRoute(pathname)) {
     return redirectTo("/complete", request);
   }
 
-  // Redirect authenticated users away from public pages like login or register
-  if (user && isPublicPage(pathname)) {
+  // Redirect authenticated users away from auth pages (login/register)
+  if (user && ["/login", "/register"].includes(pathname)) {
     return redirectTo("/", request);
   }
 

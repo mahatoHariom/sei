@@ -15,7 +15,7 @@ model Contact {
   message   String
   userId    String
   phone     String
-  user      User     @relation("UserContacts", fields: [userId], references: [id])
+  user      User     @relation("UserContacts", fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
@@ -45,8 +45,8 @@ model UserSubject {
   id        String   @id @default(uuid())
   userId    String
   subjectId String
-  user      User     @relation(fields: [userId], references: [id])
-  subject   Subject  @relation(fields: [subjectId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject   Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
@@ -58,9 +58,9 @@ model UserDetail {
   fatherName        String?
   parentContact     String?
   schoolCollegeName String?
-  profilePicId      String? // Foreign key to ProfilePic
-  profilePic        ProfilePic? @relation(fields: [profilePicId], references: [id])
-  user              User        @relation("UserDetailRelation", fields: [userId], references: [id])
+  profilePicId      String?
+  profilePic        ProfilePic? @relation(fields: [profilePicId], references: [id], onDelete: SetNull)
+  user              User        @relation("UserDetailRelation", fields: [userId], references: [id], onDelete: Cascade)
   userId            String      @unique
 }
 

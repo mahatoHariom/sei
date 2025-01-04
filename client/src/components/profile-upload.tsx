@@ -1,4 +1,3 @@
-"use client";
 import React, { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -30,16 +29,15 @@ const ProfileUpload = ({ profilePic }: ProfileUploadProps) => {
       setIsUploading(true);
       const cloudinaryData = await uploadToCloudinary(file);
 
-      // Use the mutation hook to update the profile picture
-      const response = await updateProfilePic({
+      await updateProfilePic({
         url: cloudinaryData.url,
         public_id: cloudinaryData.public_id,
+      }).then((res) => {
+        dispatch(setUserDetail(res.data));
+        toast.success("Profile picture updated successfully!");
       });
-
-      dispatch(setUserDetail(response.data));
-      toast.success("Profile picture updated successfully!");
     } catch (error) {
-      handleError(error as Error); // Handle any errors
+      handleError(error as Error);
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -53,18 +51,16 @@ const ProfileUpload = ({ profilePic }: ProfileUploadProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-col items-center gap-4 w-full">
       {profilePic ? (
-        <Image
-          src={profilePic.url}
-          alt="Profile picture"
-          height={128}
-          width={128}
-          className="rounded-full object-cover"
-          onError={(e) => {
-            e.currentTarget.src = "/default-avatar.png";
-          }}
-        />
+        <div className="relative w-32 h-32 rounded-full overflow-hidden border border-gray-300">
+          <Image
+            src={profilePic.url}
+            alt="Profile picture"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
       ) : (
         <div className="w-32 h-32 bg-gray-300 rounded-full flex items-center justify-center text-gray-600">
           No Image

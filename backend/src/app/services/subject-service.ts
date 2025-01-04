@@ -19,6 +19,9 @@ export class SubjectService {
     return this.subjectRepository.findUserSubjectEnrollment(userId, subjectId)
   }
 
+  async unenrollUserFromSubject(userId: string, subjectId: string) {
+    await this.subjectRepository.deleteUserSubjectEnrollment(userId, subjectId)
+  }
   async getSubjectById(subjectId: string) {
     return this.subjectRepository.getSubjectById(subjectId)
   }

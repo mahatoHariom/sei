@@ -140,4 +140,26 @@ export default async function userRoutes(fastify: FastifyInstance) {
     },
     userControllers.updateProfilePic.bind(userControllers)
   )
+
+  fastify.post(
+    '/unenroll-subject',
+    {
+      schema: {
+        tags: ['User'],
+        body: {
+          type: 'object',
+          required: ['userId', 'subjectId'],
+          properties: {
+            userId: { type: 'string' },
+            subjectId: { type: 'string' }
+          }
+        },
+        response: {
+          201: { type: 'null' }
+        }
+      },
+      onRequest: fastify.authenticate
+    },
+    userControllers.unenrollFromSubject.bind(userControllers)
+  )
 }

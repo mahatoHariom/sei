@@ -7,6 +7,9 @@ export interface ISubjectRepository {
 
   findUserSubjectEnrollment(userId: string, subjectId: string): Promise<any>
 
+   deleteUserSubjectEnrollment(userId: string, subjectId: string): Promise<void>
+  
+
   getSubjectById(subjectId: string): Promise<Subject | null>
 
   getUserSubjects(

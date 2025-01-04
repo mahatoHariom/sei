@@ -14,14 +14,14 @@ import {
 import { toast } from "sonner";
 import { handleError } from "@/helpers/handle-error";
 import { Button } from "@/components/ui/button";
-// import Image from "next/image";
+
 import { updateUser } from "@/store/slices/userSlice";
 import { setUserDetail } from "@/store/slices/user-detail-slice";
 import ProfileUpload from "@/components/profile-upload";
 
 const UserProfilePage = () => {
   const { email, fullName } = useSelector((state: RootState) => state.user);
-  // const { profilePic } = useSelector((state: RootState) => state.userDetail);
+
   const {
     address,
     fatherName,
@@ -48,7 +48,6 @@ const UserProfilePage = () => {
           dispatch(setUserDetail(response.data.userDetail));
         }
         toast.success("Profile updated successfully!");
-        // reset();
       },
       onError: handleError,
     });
@@ -56,10 +55,11 @@ const UserProfilePage = () => {
 
   return (
     <div className="p-6 lg:p-12 w-3/4 justify-center mx-auto">
-      <p className="text-red-600 mb-6 flex items-center">
+      {/* <p className="text-red-600 mb-6 flex items-center">
         * Ask admin to edit details
-      </p>
+      </p> */}
       <div className="max-w-3xl">
+        <ProfileUpload profilePic={profilePic} />
         <FormWrapper
           defaultValues={{
             email: email,
@@ -74,18 +74,9 @@ const UserProfilePage = () => {
           validationSchema={userUpdateSchema}
           onSubmit={onSubmit}
         >
-          {({ control }) => (
+          {({ control, isValid }) => (
             <>
-              <div className="flex flex-col items-center mb-4">
-                <ProfileUpload profilePic={profilePic} />
-                {/* <FormFieldWrapper
-                  name="profilePic"
-                  label="Update Profile Picture"
-                  type="file"
-                  accept="image/*"
-                  control={control}
-                /> */}
-              </div>
+              <div className="flex flex-col items-center mb-4"></div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                 <FormFieldWrapper
                   name="fullName"
@@ -137,7 +128,7 @@ const UserProfilePage = () => {
                   control={control}
                 />
               </div>
-              <Button type="submit" className="w-full mt-3">
+              <Button type="submit" className="w-full mt-3" disabled={!isValid}>
                 Update
               </Button>
             </>

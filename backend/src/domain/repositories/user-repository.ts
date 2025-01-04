@@ -65,24 +65,54 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async updateProfilePic(userId: string, profilePicData: { url: string; publicId: string }): Promise<UserDetail> {
-    // Create new profile pic
-    const profilePic = await this.prisma.profilePic.create({
-      data: {
-        url: profilePicData.url,
-        publicId: profilePicData.publicId
-      }
+    // Fetch the user's detail
+    const userDetail = await this.prisma.userDetail.findUnique({
+      where: { userId },
+      include: { profilePic: true } // Include the profilePic relationship
     })
 
-    // Update user detail with new profile pic
-    return await this.prisma.userDetail.update({
+    if (!userDetail) {
+      throw new Error('User detail not found')
+    }
+
+    if (userDetail.profilePic) {
+      // Update the existing profile picture
+      await this.prisma.profilePic.update({
+        where: { id: userDetail.profilePic.id },
+        data: {
+          url: profilePicData.url,
+          publicId: profilePicData.publicId
+        }
+      })
+    } else {
+      // Create a new profile picture
+      const newProfilePic = await this.prisma.profilePic.create({
+        data: {
+          url: profilePicData.url,
+          publicId: profilePicData.publicId
+        }
+      })
+
+      // Update the UserDetail with the new profilePic ID
+      await this.prisma.userDetail.update({
+        where: { userId },
+        data: {
+          profilePicId: newProfilePic.id
+        }
+      })
+    }
+
+    // Return the updated UserDetail with the profile picture
+    const updatedUserDetail = await this.prisma.userDetail.findUnique({
       where: { userId },
-      data: {
-        profilePicId: profilePic.id
-      },
-      include: {
-        profilePic: true
-      }
+      include: { profilePic: true }
     })
+
+    if (!updatedUserDetail) {
+      throw new Error('User detail not found after update')
+    }
+
+    return updatedUserDetail
   }
 
   async updateUserDetails(userId: string, data: Partial<CreateUserDetailInput>): Promise<UserDetail> {

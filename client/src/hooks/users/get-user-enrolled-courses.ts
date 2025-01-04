@@ -1,6 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getUserCourses } from "@/services/users";
 import { GetUserCoursesResponse } from "@/types/subjects";
+// import api from "@/lib/axios-instance";
+import { apiKeys } from "@/constants/apiKeys";
 
 export const useUserCourses = (
   userId: string,
@@ -9,7 +11,7 @@ export const useUserCourses = (
   search?: string
 ) => {
   return useQuery<GetUserCoursesResponse>({
-    queryKey: ["userCourses", userId, page, limit, search],
+    queryKey: [apiKeys.userCourses, userId, page, limit, search],
     queryFn: () =>
       getUserCourses({ userId, page, limit, search }).then((res) => ({
         ...res,

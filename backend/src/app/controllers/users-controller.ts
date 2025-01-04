@@ -167,4 +167,27 @@ export class UserControllers {
 
     return reply.status(200).send(details)
   }
+
+  async unenrollFromSubject(request: FastifyRequest<{ Body: EnrollSubjectInput }>, reply: FastifyReply) {
+    const { userId, subjectId } = request.body
+
+    const subject = await this.subjectService.getSubjectById(subjectId)
+    if (!subject) {
+      return reply.status(400).send({ message: 'Subject not found' })
+    }
+
+    const user = await this.authRepository.findById(userId)
+    if (!user) {
+      return reply.status(400).send({ message: 'User not found' })
+    }
+
+    const existingEnrollment = await this.subjectService.checkEnrollment(userId, subjectId)
+    if (!existingEnrollment) {
+      return reply.status(400).send({ message: 'User is not enrolled in this subject' })
+    }
+
+    await this.subjectService.unenrollUserFromSubject(userId, subjectId)
+
+    return reply.status(200).send()
+  }
 }

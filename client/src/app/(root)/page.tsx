@@ -6,12 +6,14 @@ import { TeamSection } from "@/components/about/about-team";
 import HomeCarousel from "@/components/home/home-carousel";
 import { useGetProfile } from "@/hooks/users/use-get-profile-hooks";
 import { setUserDetail } from "@/store/slices/user-detail-slice";
-import { useDispatch } from "react-redux";
+import { RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
 // import TestimonialsScroller from "@/components/testimonial";
 
 export default function Home() {
   const dispatch = useDispatch();
-  const { data, isSuccess } = useGetProfile();
+  const { id } = useSelector((state: RootState) => state.user);
+  const { data, isSuccess } = useGetProfile(id);
   if (isSuccess) {
     dispatch(setUserDetail && setUserDetail(data));
   }

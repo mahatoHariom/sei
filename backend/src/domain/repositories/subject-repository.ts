@@ -80,6 +80,26 @@ export class PrismaSubjectRepository implements ISubjectRepository {
     })
   }
 
+  async deleteUserSubjectEnrollment(userId: string, subjectId: string): Promise<void> {
+    // First find the enrollment
+    const enrollment = await this.prisma.userSubject.findFirst({
+      where: {
+        userId: userId,
+        subjectId: subjectId
+      }
+    })
+
+    if (!enrollment) {
+      throw new Error('Enrollment not found')
+    }
+
+    await this.prisma.userSubject.delete({
+      where: {
+        id: enrollment.id
+      }
+    })
+  }
+
   async getSubjectById(subjectId: string) {
     return this.prisma.subject.findUnique({
       where: { id: subjectId }
