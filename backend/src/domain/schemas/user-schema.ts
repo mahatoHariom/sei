@@ -1,6 +1,19 @@
 // user-schemas.ts
 import { Type } from '@sinclair/typebox'
 
+export const profilePicSchema = Type.Object({
+  id: Type.String(),
+  publicId: Type.String(),
+  url: Type.String({ format: 'uri' }),
+  createdAt: Type.String({ format: 'date-time' }),
+  updatedAt: Type.String({ format: 'date-time' })
+})
+
+export const updateProfilePicSchema = Type.Object({
+  url: Type.String({ format: 'uri' }),
+  public_id: Type.String()
+})
+
 export const userDetailSchema = Type.Object({
   phoneNumber: Type.Optional(Type.String()),
   address: Type.Optional(Type.String()),
@@ -8,12 +21,8 @@ export const userDetailSchema = Type.Object({
   fatherName: Type.Optional(Type.String()),
   parentContact: Type.Optional(Type.String()),
   schoolCollegeName: Type.Optional(Type.String()),
-  profilePic: Type.Optional(
-    Type.Object({
-      public_id: Type.String(),
-      url: Type.String({ format: 'uri' })
-    })
-  )
+  profilePicId: Type.Optional(Type.String()),
+  profilePic: Type.Optional(profilePicSchema)
 })
 
 export const changePasswordInputSchema = Type.Object({
@@ -29,7 +38,6 @@ export const enrollSubjectBody = Type.Object({
   subjectId: Type.String(),
   userId: Type.String()
 })
-
 export const userDetailResponseSchema = Type.Intersect([
   userDetailSchema,
   Type.Object({
@@ -37,7 +45,6 @@ export const userDetailResponseSchema = Type.Intersect([
     userId: Type.String()
   })
 ])
-
 export const userBaseSchema = Type.Object({
   fullName: Type.String(),
   email: Type.String(),

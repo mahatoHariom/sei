@@ -25,7 +25,11 @@ export class PrismaAuthRepository implements IAuthRepository {
     return this.prisma.user.findUnique({
       where: { id },
       include: {
-        userDetail: true
+        userDetail: {
+          include: {
+            profilePic: true // Assuming profilePic is a relation in userDetail
+          }
+        }
       }
     })
   }

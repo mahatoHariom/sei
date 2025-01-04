@@ -1,18 +1,17 @@
-// hooks/users/user-update-profile.ts
 import { useMutation } from "@tanstack/react-query";
-import { UserUpdateInput } from "@/types";
+import { User, UserUpdateInput } from "@/types";
 import api from "@/lib/axios-instance";
 import { apiKeys } from "@/constants/apiKeys";
 
+interface ApiResponse<T> {
+  data: T;
+}
+
 export const useUpdateProfile = () => {
-  return useMutation({
+  return useMutation<ApiResponse<User>, Error, UserUpdateInput>({
     mutationKey: [apiKeys.updateUser],
     mutationFn: (data: UserUpdateInput) => {
-      return api.patch("/user/edit-profile", data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      return api.patch("/user/edit-profile", data);
     },
   });
 };

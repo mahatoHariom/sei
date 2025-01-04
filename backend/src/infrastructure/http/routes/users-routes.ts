@@ -10,6 +10,8 @@ import {
   CreateUserDetailInput,
   enrollSubjectBody,
   getEnrolledCourseSchema,
+  updateProfilePicSchema,
+  userDetailResponseSchema,
   userDetailSchema,
   userResponseSchema
 } from '@/domain/schemas/user-schema'
@@ -100,12 +102,12 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       schema: {
         tags: ['User'],
-        consumes: ['multipart/form-data'],
+
         response: {
           200: userResponseSchema
         }
       },
-      preHandler: upload.single('profilePic'),
+
       onRequest: [fastify.authenticate]
     },
     userControllers.editProfile.bind(userControllers)
@@ -123,4 +125,19 @@ export default async function userRoutes(fastify: FastifyInstance) {
       },
       userControllers.getUserDetails.bind(userControllers)
     )
+
+  fastify.patch<{ Body: { url: string; public_id: string } }>(
+    '/update-profile-pic',
+    {
+      schema: {
+        tags: ['User'],
+        body: updateProfilePicSchema,
+        response: {
+          200: userDetailResponseSchema
+        }
+      },
+      onRequest: [fastify.authenticate]
+    },
+    userControllers.updateProfilePic.bind(userControllers)
+  )
 }

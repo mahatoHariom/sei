@@ -22,7 +22,7 @@ export const userUpdateSchema = z.object({
   motherName: z.string().optional(),
   schoolCollegeName: z.string().optional(),
   parentContact: z.string().optional(),
-  profilePic: z.union([z.string(), z.instanceof(File)]).optional(),
+  // profilePic: z.union([z.string(), z.instanceof(File)]).optional(),
 });
 
 export type UserUpdateInput = z.infer<typeof userUpdateSchema>;

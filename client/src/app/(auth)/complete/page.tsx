@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-// First, install the cloudinary package
-// npm install cloudinary
 "use client";
 import React from "react";
 import { toast } from "sonner";
@@ -16,7 +14,6 @@ import { useCompleteProfile } from "@/hooks/users/use-complete-profile-hooks";
 import { handleError } from "@/helpers/handle-error";
 import { Messages } from "@/constants/messages";
 import { useRouter } from "next/navigation";
-import { v2 as cloudinary } from "cloudinary";
 import { uploadToCloudinary } from "@/helpers/upload-to-cloudinary";
 
 const CompleteProfile = () => {

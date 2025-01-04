@@ -128,7 +128,34 @@ export class UserControllers {
       await this.userServices.updateUserDetails(userId, userDetails)
     }
 
-    return reply.status(200).send(updatedUser)
+    const user = await this.authRepository.findById(userId)
+    console.log(user, 'user')
+
+    return reply.status(200).send(user)
+  }
+
+  async updateProfilePic(
+    request: FastifyRequest<{
+      Body: {
+        url: string
+        public_id: string
+      }
+    }>,
+    reply: FastifyReply
+  ) {
+    const userId = request.user?.id
+    const { url, public_id } = request.body
+
+    if (!userId) {
+      throw new ApiError(Messages.INVALID_CREDENTIAL, StatusCode.Unauthorized)
+    }
+
+    const updatedUserDetail = await this.userServices.updateProfilePic(userId, {
+      url,
+      publicId: public_id
+    })
+
+    return reply.status(200).send(updatedUserDetail)
   }
 
   async getUserDetails(request: FastifyRequest, reply: FastifyReply) {

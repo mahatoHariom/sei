@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { FormWrapper } from "@/components/global/form-wrapper";
 import { FormFieldWrapper } from "@/components/global/form-field-wrapper";
 import { RootState } from "@/store/store";
@@ -14,10 +14,14 @@ import {
 import { toast } from "sonner";
 import { handleError } from "@/helpers/handle-error";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
+// import Image from "next/image";
+import { updateUser } from "@/store/slices/userSlice";
+import { setUserDetail } from "@/store/slices/user-detail-slice";
+import ProfileUpload from "@/components/profile-upload";
 
 const UserProfilePage = () => {
   const { email, fullName } = useSelector((state: RootState) => state.user);
+  // const { profilePic } = useSelector((state: RootState) => state.userDetail);
   const {
     address,
     fatherName,
@@ -29,21 +33,22 @@ const UserProfilePage = () => {
   } = useSelector((state: RootState) => state.userDetail);
 
   const { mutate: updateProfile } = useUpdateProfile();
+  const dispatch = useDispatch();
 
-  const onSubmit = (data: UserUpdateInput, reset: () => void) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "profilePic" && value instanceof File) {
-        formData.append(key, value);
-      } else if (key !== "profilePic") {
-        formData.append(key, value as string);
-      }
-    });
-
-    updateProfile(formData as any, {
-      onSuccess: () => {
+  const onSubmit = (data: UserUpdateInput) => {
+    updateProfile(data, {
+      onSuccess: (response) => {
+        dispatch(
+          updateUser({
+            email: response.data.email,
+            fullName: response.data.fullName,
+          })
+        );
+        if (response.data.userDetail) {
+          dispatch(setUserDetail(response.data.userDetail));
+        }
         toast.success("Profile updated successfully!");
-        reset();
+        // reset();
       },
       onError: handleError,
     });
@@ -65,7 +70,6 @@ const UserProfilePage = () => {
             motherName: motherName,
             schoolCollegeName: schoolCollegeName,
             parentContact: parentContact,
-            profilePic: profilePic,
           }}
           validationSchema={userUpdateSchema}
           onSubmit={onSubmit}
@@ -73,32 +77,14 @@ const UserProfilePage = () => {
           {({ control }) => (
             <>
               <div className="flex flex-col items-center mb-4">
-                {profilePic ? (
-                  <Image
-                    src={
-                      `${process.env.NEXT_PUBLIC_IMAGE_BASE_URL}/uploads/${profilePic}` ||
-                      profilePic
-                    }
-                    alt="Profile picture"
-                    fill
-                    sizes="32px"
-                    className="object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = "/default-avatar.png";
-                    }}
-                  />
-                ) : (
-                  <div className="w-32 h-32 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 mb-2">
-                    No Image
-                  </div>
-                )}
-                <FormFieldWrapper
+                <ProfileUpload profilePic={profilePic} />
+                {/* <FormFieldWrapper
                   name="profilePic"
                   label="Update Profile Picture"
                   type="file"
                   accept="image/*"
                   control={control}
-                />
+                /> */}
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
                 <FormFieldWrapper

@@ -10,6 +10,7 @@ export const apiKeys = {
   getEnrolledCourses: "getEnrolledCourses",
   getUserDetails: "getUserDetails",
   updateUser: "updateUser",
+  updateUserProfilePic:"updateUserProfilePic",
 
   admin: {
     getAllUsers: "getAllUsers",

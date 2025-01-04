@@ -64,6 +64,27 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
+  async updateProfilePic(userId: string, profilePicData: { url: string; publicId: string }): Promise<UserDetail> {
+    // Create new profile pic
+    const profilePic = await this.prisma.profilePic.create({
+      data: {
+        url: profilePicData.url,
+        publicId: profilePicData.publicId
+      }
+    })
+
+    // Update user detail with new profile pic
+    return await this.prisma.userDetail.update({
+      where: { userId },
+      data: {
+        profilePicId: profilePic.id
+      },
+      include: {
+        profilePic: true
+      }
+    })
+  }
+
   async updateUserDetails(userId: string, data: Partial<CreateUserDetailInput>): Promise<UserDetail> {
     const updateData: Prisma.UserDetailUpdateInput = {
       address: data.address,
