@@ -8,14 +8,62 @@ import { AdminService } from '../services/admin-service'
 export class AdminController {
   constructor(@inject(TYPES.AdminService) private adminService: AdminService) {}
 
-  async getAllUsers(request: FastifyRequest, reply: FastifyReply): Promise<User[]> {
-    const data = await this.adminService.getAllUsers()
-    return reply.status(200).send(data)
+  async getAllUsers(
+    request: FastifyRequest<{
+      Querystring: { page?: number; limit?: number; search?: string }
+    }>,
+    reply: FastifyReply
+  ): Promise<void> {
+    const { page = 1, limit = 10, search } = request.query
+
+    const {
+      users,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    } = await this.adminService.getAllUsers(Number(page), Number(limit), search)
+
+    return reply.status(200).send({
+      users,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    })
   }
 
-  async getAllContact(request: FastifyRequest, reply: FastifyReply): Promise<Contact[]> {
-    const data = await this.adminService.getAllContact()
-    return reply.status(200).send(data)
+  async getAllContact(
+    request: FastifyRequest<{
+      Querystring: { page?: number; limit?: number; search?: string }
+    }>,
+    reply: FastifyReply
+  ): Promise<void> {
+    const { page = 1, limit = 10, search } = request.query
+
+    const {
+      contacts,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    } = await this.adminService.getAllContact(Number(page), Number(limit), search)
+
+    return reply.status(200).send({
+      contacts,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    })
   }
 
   async editContact(

@@ -21,6 +21,13 @@ export enum AttendanceStatus {
   ABSENT = "ABSENT",
 }
 
+export interface ProfilePic {
+  id: string;
+  publicId: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+}
 // Enrollment Status Enum
 export enum EnrollmentStatus {
   PENDING = "PENDING",
@@ -33,14 +40,6 @@ export enum PaymentStatus {
   PENDING = "PENDING",
   COMPLETED = "COMPLETED",
   FAILED = "FAILED",
-}
-
-// Image Interface
-export interface Image {
-  id: string;
-  public_id: string;
-  imgSrc: string;
-  userId: string;
 }
 
 // Testimonial Interface
@@ -92,24 +91,26 @@ export interface UserDetail {
   address?: string; // Optional field
   motherName?: string; // Optional field
   fatherName?: string; // Optional field
-  profilePic?: string; // Optional field
+  profilePic?: ProfilePic; // Updated to use Image interface
   parentContact?: string; // Optional field
   schoolCollegeName?: string; // Optional field
   userId: string; // Relation field
 }
 
+// User Update Input Interface
 export interface UserUpdateInput {
   phoneNumber?: string; // Optional field
   address?: string; // Optional field
   motherName?: string; // Optional field
   fatherName?: string; // Optional field
-  profilePic?: string; // Optional field
+  profilePic?: string; // Updated to use Image interface
   parentContact?: string; // Optional field
   schoolCollegeName?: string; // Optional field
   email: string;
   fullName: string;
 }
 
+// Base User Interface
 export interface BaseUser {
   id: string;
   fullName: string;
@@ -120,9 +121,51 @@ export interface BaseUser {
   updatedAt: string;
 }
 
+// User Interface
 export interface User extends BaseUser {
   testimonials: Testimonial[];
   attendances: Attendance[];
   enrollments: Enrollment[];
-  userDetail?: UserDetail;
+  userDetail?: UserDetail; // Optional relation field
+}
+
+// Contact Interface
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  userId: string;
+  createdAt: Date;
+}
+
+export interface ContactResponse {
+  totalPages: number;
+  totalUsers: number;
+  contacts: Contact[];
+}
+
+// Response Interfaces
+export interface GetAllContactsResponse {
+  contacts: Contact[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+// Edit Contact Input Interface
+export interface EditContactInput {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+}
+
+// Delete Contact Params Interface
+export interface DeleteContactParams {
+  contactId: string;
 }

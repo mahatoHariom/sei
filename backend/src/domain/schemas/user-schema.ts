@@ -8,7 +8,12 @@ export const userDetailSchema = Type.Object({
   fatherName: Type.Optional(Type.String()),
   parentContact: Type.Optional(Type.String()),
   schoolCollegeName: Type.Optional(Type.String()),
-  profilePic: Type.Optional(Type.String({ format: 'binary' }))
+  profilePic: Type.Optional(
+    Type.Object({
+      public_id: Type.String(),
+      url: Type.String({ format: 'uri' })
+    })
+  )
 })
 
 export const changePasswordInputSchema = Type.Object({

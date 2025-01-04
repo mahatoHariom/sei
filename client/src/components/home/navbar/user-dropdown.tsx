@@ -1,7 +1,4 @@
-"use client";
-
 import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Cookies from "js-cookie";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { clearUser } from "@/store/slices/userSlice";
 import { useRouter } from "next/navigation";
 import { routesPath } from "@/constants/routes-path";
@@ -20,12 +17,16 @@ import { toast } from "sonner";
 import { Messages } from "@/constants/messages";
 import { useLogoutHooks } from "@/hooks/users/user-logout";
 import { handleError } from "@/helpers/handle-error";
-// import useLogout from "@/helpers/handle-logout";
+
+import Image from "next/image";
+import { RootState } from "@/store/store";
 
 const UserDropdown: React.FC = () => {
   const { mutate } = useLogoutHooks();
+  const { profilePic } = useSelector((state: RootState) => state.userDetail);
   const dispatch = useDispatch();
   const router = useRouter();
+
   const handleLogout = () => {
     mutate(undefined, {
       onSuccess: () => {
@@ -46,11 +47,16 @@ const UserDropdown: React.FC = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Avatar className="cursor-pointer">
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger className="focus:outline-none">
+        <div className="h-8 w-8 rounded-full overflow-hidden relative">
+          <Image
+            src={profilePic?.url || ""}
+            alt="Profile picture"
+            fill
+            sizes="32px"
+            className="object-cover"
+          />
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>

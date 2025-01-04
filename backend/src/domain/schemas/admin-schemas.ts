@@ -10,7 +10,16 @@ export const userSchema = Type.Object({
   updatedAt: Type.String({ format: 'date-time' })
 })
 
-export const getAllUsersResponseSchema = Type.Array(userSchema)
+export const getAllUsersResponseSchema = Type.Object({
+  users: Type.Array(userSchema),
+  total: Type.Number(),
+  page: Type.Number(),
+  limit: Type.Number(),
+  totalPages: Type.Number(),
+  hasPreviousPage: Type.Boolean(),
+  hasNextPage: Type.Boolean()
+})
+// export const getAllUsersResponseSchema = Type.Array(userSchema)
 
 // Contact Schema
 export const contactSchema = Type.Object({
@@ -23,7 +32,17 @@ export const contactSchema = Type.Object({
   createdAt: Type.String({ format: 'date-time' })
 })
 
-export const getAllContactsResponseSchema = Type.Array(contactSchema)
+// export const getAllContactsResponseSchema = Type.Array(contactSchema)
+
+export const getAllContactsResponseSchema = Type.Object({
+  contacts: Type.Array(contactSchema),
+  total: Type.Number(),
+  page: Type.Number(),
+  limit: Type.Number(),
+  totalPages: Type.Number(),
+  hasPreviousPage: Type.Boolean(),
+  hasNextPage: Type.Boolean()
+})
 
 export const editContactSchema = Type.Object({
   name: Type.String(),

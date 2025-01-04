@@ -1,6 +1,22 @@
-import { UserDetail } from "@/types";
+import { ProfilePic } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+// Define the ProfilePic type
+
+// Define the UserDetail type
+export interface UserDetail {
+  id: string;
+  userId: string;
+  phoneNumber?: string;
+  address?: string;
+  motherName?: string;
+  fatherName?: string;
+  profilePic?: ProfilePic; // Add profilePic field
+  parentContact?: string;
+  schoolCollegeName?: string;
+}
+
+// Initial state for the UserDetail slice
 const initialState: UserDetail = {
   id: "",
   userId: "", // Set to empty or a default value
@@ -8,11 +24,12 @@ const initialState: UserDetail = {
   address: undefined,
   motherName: undefined,
   fatherName: undefined,
-  profilePic: undefined,
+  profilePic: undefined, // Initialize as undefined
   parentContact: undefined,
   schoolCollegeName: undefined,
 };
 
+// Create the userDetail slice
 const userDetailSlice = createSlice({
   name: "userDetail",
   initialState,
@@ -33,6 +50,9 @@ const userDetailSlice = createSlice({
     },
   },
 });
+
+// Dispatch example for updating profilePic
+// dispatch(updateUserDetail({ profilePic }));
 
 // Export actions and reducer
 export const { setUserDetail, clearUserDetail, updateUserDetail } =

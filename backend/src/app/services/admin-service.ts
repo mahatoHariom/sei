@@ -7,11 +7,35 @@ import { IAdminRepository } from '@/domain/interfaces/admin.interface'
 @injectable()
 export class AdminService {
   constructor(@inject(TYPES.IAdminRepository) private adminRepository: IAdminRepository) {}
-  async getAllUsers(): Promise<User[]> {
-    return this.adminRepository.getAllUsers()
+  async getAllUsers(
+    page: number = 1,
+    limit: number = 10,
+    search?: string
+  ): Promise<{
+    users: User[]
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+  }> {
+    return this.adminRepository.getAllUsers(page, limit, search)
   }
-  async getAllContact(): Promise<Contact[]> {
-    return this.adminRepository.getAllContact()
+  async getAllContact(
+    page: number = 1,
+    limit: number = 10,
+    search?: string
+  ): Promise<{
+    contacts: Contact[]
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+  }> {
+    return this.adminRepository.getAllContact(page, limit, search)
   }
 
   async editContact({

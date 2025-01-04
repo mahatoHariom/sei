@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import api from "@/lib/axios-instance";
-import { CompleteProfileFormData } from "@/schema/users/complete-profile-schema";
+import { CompleteProfilePayload } from "@/schema/users/complete-profile-schema";
 import { LoginFormData } from "@/schema/users/login-schema";
 import { SignUpFormData } from "@/schema/users/signup-schema";
 import { BaseUser, User, UserDetail } from "@/types";
@@ -28,12 +28,8 @@ export async function logoutUser() {
   const response = await api.post("/auth/logout");
   return response.data;
 }
-export async function completeProfile(data: CompleteProfileFormData) {
-  const response = await api.post("/user/complete-profile", data, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+export async function completeProfile(data: CompleteProfilePayload) {
+  const response = await api.post("/user/complete-profile", data);
   return response.data;
 }
 

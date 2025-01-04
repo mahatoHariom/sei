@@ -31,7 +31,10 @@ export class PrismaAuthRepository implements IAuthRepository {
   }
   async getUserDetails(id: string): Promise<UserDetail | null> {
     const data = await this.prisma.userDetail.findUnique({
-      where: { userId: id }
+      where: { userId: id },
+      include: {
+        profilePic: true
+      }
     })
     console.log(data, 'yop')
     return data

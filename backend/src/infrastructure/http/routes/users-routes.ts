@@ -23,14 +23,14 @@ export default async function userRoutes(fastify: FastifyInstance) {
     {
       schema: {
         tags: ['User'],
-        consumes: ['multipart/form-data'],
+        // consumes: ['multipart/form-data'],
 
         response: {
           201: userResponseSchema
         }
       },
-      onRequest: fastify.authenticate,
-      preHandler: upload.single('profilePic')
+      onRequest: fastify.authenticate
+      // preHandler: upload.single('profilePic')
     },
     userControllers.completeProfile.bind(userControllers)
   )

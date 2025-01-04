@@ -1,7 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// First, install the cloudinary package
+// npm install cloudinary
 "use client";
 import React from "react";
-// import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { FormWrapper } from "@/components/global/form-wrapper";
@@ -15,31 +16,49 @@ import { useCompleteProfile } from "@/hooks/users/use-complete-profile-hooks";
 import { handleError } from "@/helpers/handle-error";
 import { Messages } from "@/constants/messages";
 import { useRouter } from "next/navigation";
+import { v2 as cloudinary } from "cloudinary";
+import { uploadToCloudinary } from "@/helpers/upload-to-cloudinary";
 
 const CompleteProfile = () => {
   const { mutate: completeProfile, isPending } = useCompleteProfile();
   const router = useRouter();
 
   const onSubmit = async (data: CompleteProfileFormData) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (key === "profilePic" && value instanceof File) {
-        formData.append(key, value);
-      } else if (key !== "profilePic") {
-        formData.append(key, value as string);
-      }
-    });
+    try {
+      let cloudinaryData = null;
 
-    completeProfile(formData as any, {
-      onSuccess: async (data) => {
-        Cookies.set("accessToken", data.accessToken);
-        Cookies.set("user", JSON.stringify(data.updatedUser));
-        Cookies.set("refreshToken", data.refreshToken);
-        toast.success(Messages.profileComplete.success);
-        router.refresh();
-      },
-      onError: handleError,
-    });
+      if (data.profilePic instanceof File) {
+        cloudinaryData = await uploadToCloudinary(data.profilePic);
+      }
+
+      const formData = {
+        phoneNumber: data.phoneNumber,
+        address: data.address,
+        motherName: data.motherName,
+        fatherName: data.fatherName,
+        parentContact: data.parentContact,
+        schoolCollegeName: data.schoolCollegeName,
+        profilePic: cloudinaryData
+          ? {
+              url: cloudinaryData.url,
+              public_id: cloudinaryData.public_id,
+            }
+          : undefined,
+      };
+
+      completeProfile(formData, {
+        onSuccess: async (data) => {
+          Cookies.set("accessToken", data.accessToken);
+          Cookies.set("user", JSON.stringify(data.updatedUser));
+          Cookies.set("refreshToken", data.refreshToken);
+          toast.success(Messages.profileComplete.success);
+          router.refresh();
+        },
+        onError: handleError,
+      });
+    } catch (error) {
+      toast.error("Failed to upload image");
+    }
   };
 
   return (

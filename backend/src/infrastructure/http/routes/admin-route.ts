@@ -24,7 +24,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: getAllUsersResponseSchema
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.getAllUsers.bind(adminController)
   )
@@ -38,7 +38,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: getAllContactsResponseSchema
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.getAllContact.bind(adminController)
   )
@@ -54,7 +54,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.editContact.bind(adminController)
   )
@@ -69,7 +69,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.deleteContact.bind(adminController)
   )
@@ -84,7 +84,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           201: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.createSubject.bind(adminController)
   )
@@ -100,7 +100,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.editSubject.bind(adminController)
   )
@@ -115,7 +115,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.deleteSubject.bind(adminController)
   )
@@ -130,7 +130,7 @@ export default async function adminRoutes(fastify: FastifyInstance) {
           200: { type: 'null' }
         }
       },
-      onRequest: [fastify.authenticate, fastify.CheckAdminRole]
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
     },
     adminController.deleteUser.bind(adminController)
   )

@@ -51,16 +51,26 @@ model UserSubject {
 }
 
 model UserDetail {
-  id                String  @id @default(uuid())
+  id                String      @id @default(uuid())
   phoneNumber       String?
   address           String?
   motherName        String?
   fatherName        String?
-  profilePic        String?
   parentContact     String?
   schoolCollegeName String?
-  user              User    @relation("UserDetailRelation", fields: [userId], references: [id])
-  userId            String  @unique
+  profilePicId      String? // Foreign key to ProfilePic
+  profilePic        ProfilePic? @relation(fields: [profilePicId], references: [id])
+  user              User        @relation("UserDetailRelation", fields: [userId], references: [id])
+  userId            String      @unique
+}
+
+model ProfilePic {
+  id         String       @id @default(uuid())
+  publicId   String       @map("public_id")
+  url        String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  UserDetail UserDetail[]
 }
 
 enum UserRole {
