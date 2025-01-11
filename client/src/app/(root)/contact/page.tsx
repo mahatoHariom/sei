@@ -10,7 +10,8 @@ import { FormFieldWrapper } from "@/components/global/form-field-wrapper";
 import { useCreateContact } from "@/hooks/contact/user-contact";
 import { RootState } from "@/store/store";
 import Cookies from "js-cookie";
-import { redirect } from "next/navigation";
+
+import { Messages } from "@/constants/messages";
 const ContactPage = () => {
   const [submittedData, setSubmittedData] = useState<ContactFormData | null>(
     null
@@ -20,12 +21,9 @@ const ContactPage = () => {
   const { id: userId, email } = useSelector((state: RootState) => state.user);
   const token = Cookies.get("accessToken");
 
-  if (!token) {
-    redirect("/login");
-  }
   const onSubmit = (data: ContactFormData, reset: () => void) => {
-    if (!userId) {
-      toast.error("User is not logged in");
+    if (!userId || !token) {
+      toast.error(Messages.needToLogin.success);
       return;
     }
 
@@ -77,7 +75,7 @@ const ContactPage = () => {
                   label="Email Address"
                   placeholder="Enter your email"
                   control={control}
-                  disabled
+                  // disabled
                 />
                 <FormFieldWrapper
                   name="phone"

@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useAdminEditContact } from "@/hooks/admin";
-import { Dialog, DialogContent, DialogOverlay } from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { FormWrapper } from "@/components/global/form-wrapper";
+import { FormFieldWrapper } from "@/components/global/form-field-wrapper";
+import * as z from "zod";
 
 interface EditContactModalProps {
   isOpen: boolean;
@@ -12,6 +16,15 @@ interface EditContactModalProps {
   initialMessage: string;
 }
 
+const editContactSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  phone: z.string().min(1, "Phone number is required"),
+  email: z.string().email("Invalid email address"),
+  message: z.string().min(1, "Message is required"),
+});
+
+type EditContactFormData = z.infer<typeof editContactSchema>;
+
 const EditContactModal: React.FC<EditContactModalProps> = ({
   isOpen,
   onClose,
@@ -21,29 +34,18 @@ const EditContactModal: React.FC<EditContactModalProps> = ({
   initialEmail,
   initialMessage,
 }) => {
-  const [newName, setNewName] = useState(initialName);
-  const [newPhone, setNewPhone] = useState(initialPhone);
-  const [newEmail, setNewEmail] = useState(initialEmail);
-  const [newMessage, setNewMessage] = useState(initialMessage);
   const editContactMutation = useAdminEditContact();
 
-  useEffect(() => {
-    setNewName(initialName);
-    setNewPhone(initialPhone);
-    setNewEmail(initialEmail);
-    setNewMessage(initialMessage);
-  }, [initialName, initialPhone, initialEmail, initialMessage]);
-
-  const handleEdit = () => {
+  const handleSubmit = (data: EditContactFormData) => {
     if (contactId) {
       editContactMutation.mutate(
         {
           contactId,
           updates: {
-            name: newName,
-            phone: newPhone,
-            email: newEmail,
-            message: newMessage,
+            name: data.name,
+            phone: data.phone,
+            email: data.email,
+            message: data.message,
           },
         },
         {
@@ -60,83 +62,65 @@ const EditContactModal: React.FC<EditContactModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogOverlay className="fixed inset-0 bg-black bg-opacity-50" />
-      <DialogContent
-        className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto"
-        aria-labelledby="edit-modal-title"
-      >
-        <h2
-          id="edit-modal-title"
-          className="text-xl font-bold text-gray-800 mb-4"
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit Contact</DialogTitle>
+        </DialogHeader>
+
+        <FormWrapper
+          defaultValues={{
+            name: initialName,
+            phone: initialPhone,
+            email: initialEmail,
+            message: initialMessage,
+          }}
+          validationSchema={editContactSchema}
+          onSubmit={handleSubmit}
         >
-          Edit Contact
-        </h2>
-        <div className="mb-6">
-          <label htmlFor="contact-name" className="block text-gray-600 mb-2">
-            Name
-          </label>
-          <input
-            id="contact-name"
-            type="text"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
-            placeholder="Enter new name"
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="contact-phone" className="block text-gray-600 mb-2">
-            Phone
-          </label>
-          <input
-            id="contact-phone"
-            type="text"
-            value={newPhone}
-            onChange={(e) => setNewPhone(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
-            placeholder="Enter new phone number"
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="contact-email" className="block text-gray-600 mb-2">
-            Email
-          </label>
-          <input
-            id="contact-email"
-            type="email"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
-            placeholder="Enter new email"
-          />
-        </div>
-        <div className="mb-6">
-          <label htmlFor="contact-message" className="block text-gray-600 mb-2">
-            Message
-          </label>
-          <textarea
-            id="contact-message"
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
-            placeholder="Enter new message"
-          />
-        </div>
-        <div className="flex justify-end space-x-3">
-          <button
-            onClick={onClose}
-            className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={handleEdit}
-            disabled={editContactMutation.isPending}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-          >
-            {editContactMutation.isPending ? "Saving..." : "Save"}
-          </button>
-        </div>
+          {({ control, isValid }) => (
+            <>
+              <div className="grid gap-4 py-4">
+                <FormFieldWrapper
+                  name="name"
+                  label="Name"
+                  placeholder="Enter name"
+                  control={control}
+                />
+                <FormFieldWrapper
+                  name="phone"
+                  label="Phone"
+                  placeholder="Enter phone number"
+                  control={control}
+                />
+                <FormFieldWrapper
+                  name="email"
+                  label="Email"
+                  placeholder="Enter email"
+                  control={control}
+                  type="email"
+                />
+                <FormFieldWrapper
+                  name="message"
+                  label="Message"
+                  placeholder="Enter message"
+                  control={control}
+                />
+              </div>
+              <div className="flex justify-end gap-3 mt-6">
+                <Button type="button" variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={!isValid || editContactMutation.isPending}
+                  loading={editContactMutation.isPending}
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </>
+          )}
+        </FormWrapper>
       </DialogContent>
     </Dialog>
   );

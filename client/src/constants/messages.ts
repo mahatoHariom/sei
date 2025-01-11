@@ -9,9 +9,14 @@ interface Messages {
   logout: AuthMessages;
   profileComplete: AuthMessages;
   Enrolled: AuthMessages;
+  needToLogin: AuthMessages;
 }
 
 export const Messages: Messages = {
+  needToLogin: {
+    success: "You need to login first",
+  },
+
   login: {
     success: "Login successful! Welcome back.",
     error: "Login failed. Please check your credentials and try again.",

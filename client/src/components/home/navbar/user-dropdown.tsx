@@ -34,7 +34,7 @@ const UserDropdown: React.FC = () => {
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         Cookies.remove("user");
-        router.push(routesPath.login);
+        router.push(routesPath.home);
         toast.error(Messages.logout.success);
       },
       onError: handleError,

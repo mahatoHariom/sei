@@ -7,6 +7,10 @@ import {
   getAllContacts,
   editContact,
   deleteContact,
+  editSubject,
+  deleteSubject,
+  createSubject,
+  getAllSubjects,
 } from "@/services/admin";
 import { User, Contact, ContactResponse } from "@/types";
 
@@ -56,7 +60,7 @@ export const useAdminGetAllContacts = ({
   search,
 }: GetAllContactsParams): UseQueryResult<ContactResponse> => {
   return useQuery({
-    queryKey: ["admin-contacts", page, limit, search],
+    queryKey: [apiKeys.admin.getAllContacts, page, limit, search],
     queryFn: () => getAllContacts(page, limit, search),
   });
 };
@@ -65,8 +69,11 @@ export const useAdminEditContact = () => {
   return useMutation({
     mutationFn: (data: { contactId: string; updates: Partial<Contact> }) =>
       editContact(data),
+    mutationKey: [apiKeys.admin.editContact],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-contacts"] });
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllContacts],
+      });
     },
   });
 };
@@ -74,8 +81,54 @@ export const useAdminEditContact = () => {
 export const useAdminDeleteContact = () => {
   return useMutation({
     mutationFn: (contactId: string) => deleteContact(contactId),
+    mutationKey: [apiKeys.admin.deleteContact],
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["admin-contacts"] });
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllContacts],
+      });
+    },
+  });
+};
+
+export const useGetAllSubjects = () => {
+  return useQuery({
+    queryKey: [apiKeys.admin.getAllSubjects],
+    queryFn: getAllSubjects,
+  });
+};
+
+export const useCreateSubject = () => {
+  return useMutation({
+    mutationFn: createSubject,
+    mutationKey: [apiKeys.admin.createSubject],
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllSubjects],
+      });
+    },
+  });
+};
+
+export const useEditSubject = () => {
+  return useMutation({
+    mutationFn: editSubject,
+    mutationKey: [apiKeys.admin.editSubject],
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllSubjects],
+      });
+    },
+  });
+};
+
+export const useDeleteSubject = () => {
+  return useMutation({
+    mutationFn: deleteSubject,
+    mutationKey: [apiKeys.admin.deleteSubject],
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllSubjects],
+      });
     },
   });
 };

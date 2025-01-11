@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 // Define public and protected routes
 const publicRoutes = ["/login", "/register", "/"];
 const protectedRoutes = [
-  "/course",
-  "/contact",
+  // "/course",
+  // "/contact",
   "/user/dashboard",
   "/admin/dashboard",
 ];

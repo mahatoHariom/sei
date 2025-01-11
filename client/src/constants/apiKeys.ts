@@ -12,11 +12,17 @@ export const apiKeys = {
   updateUser: "updateUser",
   updateUserProfilePic: "updateUserProfilePic",
   unenrollFromSubject: "unenrollFromSubject",
-  userCourses:"userCourses",
+  userCourses: "userCourses",
 
   admin: {
-    getAllUsers: "getAllUsers",
-    deleteUser: "AdmindeleteUser",
-    contacts: "admin-contacts",
+    getAllUsers: "admin:getAllUsers",
+    deleteUser: "admin:deleteUser",
+    getAllContacts: "admin:getAllContacts",
+    editContact: "admin:editContact",
+    deleteContact: "admin:deleteContact",
+    getAllSubjects: "admin:getAllSubjects",
+    createSubject: "admin:createSubject",
+    editSubject: "admin:editSubject",
+    deleteSubject: "admin:deleteSubject",
   },
 };

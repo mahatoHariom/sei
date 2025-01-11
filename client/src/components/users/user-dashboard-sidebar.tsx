@@ -48,9 +48,10 @@ export function UserDashboardSidebar() {
     Cookies.remove("accessToken");
     Cookies.remove("refreshToken");
     Cookies.remove("user");
-    router.push(routesPath.login);
+
     dispatch(clearUser());
     toast.error(Messages.logout.success);
+    router.push(routesPath.home);
   };
 
   return (

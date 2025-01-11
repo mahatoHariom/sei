@@ -7,7 +7,8 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import { Search, X, Edit, Trash2 } from "lucide-react";
+
+import { Pencil, Trash2, Search, X } from "lucide-react";
 import { useAdminGetAllContacts } from "@/hooks/admin";
 import { formatDate } from "@/helpers/formatdate";
 import { CustomPagination } from "@/components/custom-pagination";
@@ -79,7 +80,7 @@ const AdminAllContacts: React.FC = () => {
             onClick={() => handleEdit(row.original)}
             className="text-blue-500 hover:underline"
           >
-            <Edit size={16} />
+            <Pencil size={16} />
           </button>
           <button
             onClick={() => handleDelete(row.original.id)}

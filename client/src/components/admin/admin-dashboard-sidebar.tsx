@@ -1,6 +1,6 @@
 "use client";
 
-import { User, BookOpen, Phone, LogOut } from "lucide-react";
+import { User, BookOpen, Phone, LogOut, User2 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +38,11 @@ const adminItems = [
     url: "/admin/dashboard/contacts",
     icon: Phone,
   },
+  {
+    title: "Profile",
+    url: "/admin/dashboard/admin-profile",
+    icon: User2,
+  },
 ];
 
 export function AdminDashboardSidebar() {
@@ -51,8 +56,8 @@ export function AdminDashboardSidebar() {
     Cookies.remove("refreshToken");
     Cookies.remove("admin");
     dispatch(resetState());
-    router.push(routesPath.login);
     toast.success(Messages.logout.success);
+    router.push(routesPath.home);
   };
 
   return (

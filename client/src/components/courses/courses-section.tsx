@@ -26,14 +26,10 @@ export const CoursesSection = () => {
   const { data: courses, isLoading, isError } = useSubjects();
   const { mutate: enroll } = useEnrollInSubject();
   const { id: userId } = useSelector((state: RootState) => state.user);
-  if (isLoading) {
-    return <p className="text-center text-lg">Loading courses...</p>;
-  }
-
   const token = Cookies.get("accessToken");
 
-  if (!token) {
-    redirect("/login");
+  if (isLoading) {
+    return <p className="text-center text-lg">Loading courses...</p>;
   }
 
   if (isError) {
@@ -45,18 +41,24 @@ export const CoursesSection = () => {
   }
 
   const handleEnroll = (subjectId: string) => {
-    enroll(
-      { subjectId, userId },
-      {
-        onError: handleError,
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: [apiKeys.getAllSubjects],
-          });
-          toast.success(Messages.Enrolled.success);
-        },
-      }
-    );
+    if (!userId || !token) {
+      toast.error(Messages.needToLogin.success);
+      redirect("/");
+      return;
+    } else {
+      enroll(
+        { subjectId, userId },
+        {
+          onError: handleError,
+          onSuccess: () => {
+            queryClient.invalidateQueries({
+              queryKey: [apiKeys.getAllSubjects],
+            });
+            toast.success(Messages.Enrolled.success);
+          },
+        }
+      );
+    }
   };
 
   return (

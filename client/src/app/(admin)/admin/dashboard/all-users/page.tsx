@@ -7,10 +7,11 @@ import {
   ColumnDef,
   flexRender,
 } from "@tanstack/react-table";
-import { Search, X } from "lucide-react";
+import { Search, X, Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "@/helpers/formatdate";
 import { useAdminGetAllUsers } from "@/hooks/admin";
 import DeleteUserModal from "@/components/admin/deleteUserModal";
+import { EditUserModal } from "@/components/admin/edit-user-modal";
 import { CustomPagination } from "@/components/custom-pagination";
 
 const AdminDashboardAllUsers: React.FC = () => {
@@ -20,9 +21,15 @@ const AdminDashboardAllUsers: React.FC = () => {
   const [inputValue, setInputValue] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Modal state
+  // Modal states
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [selectedUserData, setSelectedUserData] = useState<{
+    id: string;
+    email: string;
+    fullName: string;
+  } | null>(null);
 
   // Fetch users data
   const { data, isError, error, isLoading, refetch } = useAdminGetAllUsers({
@@ -35,7 +42,7 @@ const AdminDashboardAllUsers: React.FC = () => {
   const handleSearch = () => {
     const trimmedSearch = inputValue.trim();
     setSearchTerm(trimmedSearch);
-    setPage(1); // Reset to first page on new search
+    setPage(1);
   };
 
   // Handle keyboard enter key press
@@ -51,6 +58,12 @@ const AdminDashboardAllUsers: React.FC = () => {
     setSearchTerm("");
     setPage(1);
     refetch();
+  };
+
+  // Handle edit user
+  const handleEditUser = (userId: string, email: string, fullName: string) => {
+    setSelectedUserData({ id: userId, email, fullName });
+    setEditModalOpen(true);
   };
 
   const columns: ColumnDef<any, any>[] = [
@@ -85,6 +98,7 @@ const AdminDashboardAllUsers: React.FC = () => {
     {
       accessorKey: "createdAt",
       header: "Created Date",
+
       cell: ({ getValue }) => (
         <div className="text-sm text-gray-500">
           {formatDate(getValue<string>())}
@@ -96,21 +110,28 @@ const AdminDashboardAllUsers: React.FC = () => {
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex space-x-2">
-          <button
-            onClick={() => console.log("Edit user", row.original.id)}
-            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-          >
-            Edit
-          </button>
-          <button
+          <Pencil
+            size={16}
+            className="cursor-pointer"
+            onClick={() =>
+              handleEditUser(
+                row.original.id,
+                row.original.email,
+                row.original.fullName
+              )
+            }
+            color="blue"
+          />
+
+          <Trash2
+            color="red"
+            className="cursor-pointer"
+            size={16}
             onClick={() => {
               setSelectedUserId(row.original.id);
               setDeleteModalOpen(true);
             }}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-          >
-            Delete
-          </button>
+          />
         </div>
       ),
     },
@@ -251,6 +272,23 @@ const AdminDashboardAllUsers: React.FC = () => {
             setSelectedUserId(null);
           }}
           userId={selectedUserId}
+        />
+      )}
+
+      {/* Edit Modal */}
+      {selectedUserData && (
+        <EditUserModal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setEditModalOpen(false);
+            setSelectedUserData(null);
+          }}
+          userId={selectedUserData.id}
+          email={selectedUserData.email}
+          fullName={selectedUserData.fullName}
+          onSuccess={() => {
+            refetch();
+          }}
         />
       )}
     </div>

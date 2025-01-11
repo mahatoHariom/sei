@@ -10,10 +10,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { routesPath } from "@/constants/routes-path";
+import { ArrowLeftIcon } from "lucide-react";
+import Image from "next/image";
 
 const SignUpForm = () => {
   const { mutate: registerUser, isPending } = useRegisterUser();
   const router = useRouter();
+
   const onSubmit = (data: SignUpFormData) => {
     registerUser(data, {
       onSuccess: () => {
@@ -27,27 +30,47 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen ">
-      <div className="w-full max-w-md p-6 shadow-md rounded-lg border">
-        <h2 className="text-2xl font-bold text-center mb-2">
-          Create an account
-        </h2>
-        <p className="text-gray-600 text-center mb-4">
-          Please enter your details to create an account
-        </p>
-        <FormWrapper
-          defaultValues={{
-            fullName: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          }}
-          validationSchema={signUpSchema}
-          onSubmit={onSubmit}
-        >
-          {({ control, isValid }) => (
-            <>
-              <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+      <div className="mb-3">
+        <Image
+          src="/sei-logo.jpg"
+          width={100}
+          height={100}
+          alt="sei"
+          className="mx-auto"
+        />
+      </div>
+
+      <div className="w-full max-w-md">
+        <div className="bg-white p-8 shadow-md rounded-lg border">
+          <div className="flex justify-between items-center mb-6">
+            <Link href={routesPath.home}>
+              <Button variant="outline" size="sm">
+                <ArrowLeftIcon className="w-4 h-4 mr-2" />
+                Go to Home
+              </Button>
+            </Link>
+          </div>
+
+          <h2 className="text-2xl font-bold text-center mb-2">
+            Create an account
+          </h2>
+          <p className="text-gray-600 text-center mb-6">
+            Please enter your details to create an account
+          </p>
+
+          <FormWrapper
+            defaultValues={{
+              fullName: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            }}
+            validationSchema={signUpSchema}
+            onSubmit={onSubmit}
+          >
+            {({ control, isValid }) => (
+              <div className="space-y-4">
                 <FormFieldWrapper
                   name="fullName"
                   label="Full Name"
@@ -74,19 +97,27 @@ const SignUpForm = () => {
                   placeholder="Confirm your password..."
                   control={control}
                 />
-                <Button type="submit" disabled={!isValid} loading={isPending}>
+                <Button
+                  type="submit"
+                  disabled={!isValid}
+                  loading={isPending}
+                  className="w-full mt-6"
+                >
                   Submit
                 </Button>
               </div>
-            </>
-          )}
-        </FormWrapper>
-        <p className="mt-6 text-center text-sm">
-          Already have an account?{" "}
-          <Link href={"/login"} className="text-blue-500 hover:underline">
-            Login here
-          </Link>
-        </p>
+            )}
+          </FormWrapper>
+
+          <div className="mt-6 text-center text-sm">
+            <p>
+              Already have an account?{" "}
+              <Link href="/login" className="text-blue-500 hover:underline">
+                Login here
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
