@@ -11,6 +11,12 @@ import {
   deleteSubject,
   createSubject,
   getAllSubjects,
+  getAllEnrolledUsers,
+  getAllCarousels,
+  updateCarousel,
+  deleteCarousel,
+  Carousel,
+  createCarousel,
 } from "@/services/admin";
 import { User, Contact, ContactResponse } from "@/types";
 
@@ -128,6 +134,62 @@ export const useDeleteSubject = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [apiKeys.admin.getAllSubjects],
+      });
+    },
+  });
+};
+
+export const useAdminGetAllEnrolledUsers = ({
+  page,
+  limit,
+  search,
+}: GetAllUsersParams) => {
+  return useQuery({
+    queryKey: ["admin", "getAllEnrolledUsers", page, limit, search],
+    queryFn: () => getAllEnrolledUsers(page, limit, search),
+  });
+};
+
+export interface GetAllCarouselsParams {
+  page: number;
+  limit: number;
+}
+
+export const useAdminGetAllCarousels = (): UseQueryResult<Carousel[]> => {
+  return useQuery({
+    queryKey: [apiKeys.admin.getAllCarousels],
+    queryFn: () => getAllCarousels(),
+  });
+};
+
+export const useAdminUpdateCarousel = () => {
+  return useMutation({
+    mutationFn: updateCarousel,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllCarousels],
+      });
+    },
+  });
+};
+
+export const useAdminCreateCarousel = () => {
+  return useMutation({
+    mutationFn: createCarousel,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllCarousels],
+      });
+    },
+  });
+};
+
+export const useAdminDeleteCarousel = () => {
+  return useMutation({
+    mutationFn: deleteCarousel,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [apiKeys.admin.getAllCarousels],
       });
     },
   });

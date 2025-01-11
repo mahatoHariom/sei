@@ -23,7 +23,7 @@ import { RootState } from "@/store/store";
 
 const UserDropdown: React.FC = () => {
   const { mutate } = useLogoutHooks();
-  const { profilePic } = useSelector((state: RootState) => state.userDetail);
+  const userData = useSelector((state: RootState) => state?.userDetail);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -50,7 +50,7 @@ const UserDropdown: React.FC = () => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="h-8 w-8 rounded-full overflow-hidden relative">
           <Image
-            src={profilePic?.url || ""}
+            src={userData?.profilePic?.url || ""}
             alt="Profile picture"
             fill
             sizes="32px"

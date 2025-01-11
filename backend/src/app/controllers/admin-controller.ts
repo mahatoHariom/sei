@@ -8,6 +8,64 @@ import { AdminService } from '../services/admin-service'
 export class AdminController {
   constructor(@inject(TYPES.AdminService) private adminService: AdminService) {}
 
+  async createCarousel(request: FastifyRequest<{ Body: { publicId: string; url: string } }>, reply: FastifyReply) {
+    const { publicId, url } = request.body
+    await this.adminService.createCarousel({ publicId, url })
+    reply.status(201).send()
+  }
+
+  // Update carousel
+  async updateCarousel(
+    request: FastifyRequest<{ Body: { id: string; publicId: string; url: string } }>,
+    reply: FastifyReply
+  ) {
+    const { id, publicId, url } = request.body
+    await this.adminService.updateCarousel({ id, publicId, url })
+    reply.status(200).send()
+  }
+
+  // Delete carousel
+  async deleteCarousel(request: FastifyRequest<{ Params: { id: string } }>, reply: FastifyReply) {
+    const { id } = request.params
+    await this.adminService.deleteCarousel(id)
+    reply.status(200).send()
+  }
+
+  // Get all carousels
+  async getCarousels(request: FastifyRequest, reply: FastifyReply) {
+    const carousels = await this.adminService.getCarousels()
+    reply.status(200).send(carousels)
+  }
+
+  async getEnrolledUsers(
+    request: FastifyRequest<{
+      Querystring: { page?: number; limit?: number; search?: string }
+    }>,
+    reply: FastifyReply
+  ): Promise<void> {
+    const { page = 1, limit = 10, search } = request.query
+
+    const {
+      enrollments,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    } = await this.adminService.getEnrolledUsers(Number(page), Number(limit), search)
+
+    return reply.status(200).send({
+      enrollments,
+      total,
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      hasPreviousPage,
+      hasNextPage
+    })
+  }
+
   async getAllUsers(
     request: FastifyRequest<{
       Querystring: { page?: number; limit?: number; search?: string }

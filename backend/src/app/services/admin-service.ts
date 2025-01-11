@@ -1,12 +1,35 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '@/types'
 import { ISubjectRepository } from '@/domain/interfaces/subject.interface'
-import { Contact, Subject, User } from '@prisma/client'
+import { Carousel, Contact, Subject, User } from '@prisma/client'
 import { IAdminRepository } from '@/domain/interfaces/admin.interface'
 
 @injectable()
 export class AdminService {
   constructor(@inject(TYPES.IAdminRepository) private adminRepository: IAdminRepository) {}
+
+  async createCarousel({ publicId, url }: { publicId: string; url: string }): Promise<void> {
+    return this.adminRepository.createCarousel({ publicId, url })
+  }
+
+  // Update a carousel
+  async updateCarousel({ id, publicId, url }: { id: string; publicId: string; url: string }): Promise<void> {
+    return this.adminRepository.updateCarousel({ id, publicId, url })
+  }
+
+  // Delete a carousel
+  async deleteCarousel(id: string): Promise<void> {
+    return this.adminRepository.deleteCarousel({ id })
+  }
+
+  // Get all carousels
+  async getCarousels(): Promise<Carousel[]> {
+    return this.adminRepository.getCarousels()
+  }
+
+  async getEnrolledUsers(page: number = 1, limit: number = 10, search?: string) {
+    return this.adminRepository.getEnrolledUsers(page, limit, search)
+  }
   async getAllUsers(
     page: number = 1,
     limit: number = 10,

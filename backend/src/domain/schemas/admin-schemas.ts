@@ -10,6 +10,30 @@ export const userSchema = Type.Object({
   updatedAt: Type.String({ format: 'date-time' })
 })
 
+export const enrollmentSchema = Type.Object({
+  user: Type.Object({
+    id: Type.String(),
+    fullName: Type.String(),
+    email: Type.String({ format: 'email' })
+  }),
+  subject: Type.Array(
+    Type.Object({
+      name: Type.String()
+    })
+  ),
+  createdAt: Type.String({ format: 'date-time' })
+})
+
+export const getEnrolledUsersResponseSchema = Type.Object({
+  enrollments: Type.Array(enrollmentSchema),
+  total: Type.Number(),
+  page: Type.Number(),
+  limit: Type.Number(),
+  totalPages: Type.Number(),
+  hasPreviousPage: Type.Boolean(),
+  hasNextPage: Type.Boolean()
+})
+
 export const getAllUsersResponseSchema = Type.Object({
   users: Type.Array(userSchema),
   total: Type.Number(),
@@ -42,6 +66,21 @@ export const getAllContactsResponseSchema = Type.Object({
   totalPages: Type.Number(),
   hasPreviousPage: Type.Boolean(),
   hasNextPage: Type.Boolean()
+})
+
+export const createCarouselSchema = Type.Object({
+  publicId: Type.String(),
+  url: Type.String()
+})
+
+export const updateCarouselSchema = Type.Object({
+  id: Type.String(),
+  publicId: Type.String(),
+  url: Type.String()
+})
+
+export const deleteCarouselParamsSchema = Type.Object({
+  id: Type.String()
 })
 
 export const editContactSchema = Type.Object({

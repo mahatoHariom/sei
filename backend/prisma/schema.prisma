@@ -8,6 +8,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Carousel {
+  id        String   @id @default(uuid())
+  publicId  String   @map("public_id")
+  url       String
+  createdAt DateTime @default(now())
+}
+
 model Contact {
   id        String   @id @default(uuid())
   name      String

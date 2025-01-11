@@ -1,6 +1,34 @@
-import { Contact, Subject, User } from '@prisma/client'
+import { Carousel, Contact, Subject, User } from '@prisma/client'
 
 export interface IAdminRepository {
+  createCarousel({ publicId, url }: { publicId: string; url: string }): Promise<void>
+  updateCarousel({ id, publicId, url }: { id: string; publicId: string; url: string }): Promise<void>
+  deleteCarousel({ id }: { id: string }): Promise<void>
+  getCarousels(): Promise<Carousel[]>
+  getEnrolledUsers(
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<{
+    enrollments: Array<{
+      user: {
+        id: string
+        fullName: string
+        email: string
+      }
+      subject: Array<{
+        name: string
+      }>
+      createdAt: Date
+    }>
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+  }>
+
   getAllUsers(
     page: number,
     limit: number,

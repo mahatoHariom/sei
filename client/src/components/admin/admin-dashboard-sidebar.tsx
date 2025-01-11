@@ -1,6 +1,14 @@
 "use client";
 
-import { User, BookOpen, Phone, LogOut, User2 } from "lucide-react";
+import {
+  User,
+  BookOpen,
+  Phone,
+  LogOut,
+  User2,
+  School,
+  PictureInPicture,
+} from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +42,11 @@ const adminItems = [
     icon: BookOpen,
   },
   {
+    title: "All Enrolled Users",
+    url: "/admin/dashboard/all-enrolled",
+    icon: School,
+  },
+  {
     title: "Contacts",
     url: "/admin/dashboard/contacts",
     icon: Phone,
@@ -42,6 +55,11 @@ const adminItems = [
     title: "Profile",
     url: "/admin/dashboard/admin-profile",
     icon: User2,
+  },
+  {
+    title: "Carousels",
+    url: "/admin/dashboard/all-carousel",
+    icon: PictureInPicture,
   },
 ];
 

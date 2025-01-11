@@ -24,5 +24,10 @@ export const apiKeys = {
     createSubject: "admin:createSubject",
     editSubject: "admin:editSubject",
     deleteSubject: "admin:deleteSubject",
+
+    getAllCarousels: "admin:getAllCarousels",
+    updateCarousel: "admin:updateCarousel",
+    deleteCarousel: "admin:deleteCarousel",
+    createCarousel: "admin:createCarousel",
   },
 };

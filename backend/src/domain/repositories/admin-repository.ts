@@ -1,12 +1,137 @@
-import { Contact, Prisma, Subject, User } from '@prisma/client'
+import { Carousel, Contact, Prisma, Subject, User } from '@prisma/client'
 import { injectable } from 'inversify'
 import { PrismaService } from '@/app/services/prisma-service'
 import { ISubjectRepository } from '../interfaces/subject.interface'
 import { IAdminRepository } from '../interfaces/admin.interface'
+import { EnrollmentWithSubjects } from '@/types/enrollment'
 
 @injectable()
 export class PrismaAdminRepository implements IAdminRepository {
   private readonly prisma = PrismaService.getClient()
+
+  async createCarousel({ publicId, url }: { publicId: string; url: string }): Promise<void> {
+    await this.prisma.carousel.create({
+      data: { publicId, url }
+    })
+  }
+
+  async updateCarousel({ id, publicId, url }: { id: string; publicId: string; url: string }): Promise<void> {
+    await this.prisma.carousel.update({
+      where: { id },
+      data: { publicId, url }
+    })
+  }
+
+  async deleteCarousel({ id }: { id: string }): Promise<void> {
+    await this.prisma.carousel.delete({
+      where: { id }
+    })
+  }
+
+  async getCarousels(): Promise<Carousel[]> {
+    return this.prisma.carousel.findMany({
+      orderBy: { createdAt: 'desc' }
+    })
+  }
+
+  async getEnrolledUsers(
+    page: number = 1,
+    limit: number = 10,
+    search?: string
+  ): Promise<{
+    enrollments: Array<{
+      user: {
+        id: string
+        fullName: string
+        email: string
+      }
+      subject: Array<{
+        name: string
+      }>
+      createdAt: Date
+    }>
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+    hasPreviousPage: boolean
+    hasNextPage: boolean
+  }> {
+    const skip = (page - 1) * limit
+
+    // Fetch users with their subjects
+    const usersWithSubjects = await this.prisma.user.findMany({
+      where: {
+        AND: [
+          { subjects: { some: {} } }, // Users with at least one subject
+          search
+            ? {
+                OR: [
+                  { fullName: { contains: search, mode: 'insensitive' } },
+                  { email: { contains: search, mode: 'insensitive' } },
+                  { subjects: { some: { subject: { name: { contains: search, mode: 'insensitive' } } } } }
+                ]
+              }
+            : {}
+        ]
+      },
+      select: {
+        fullName: true,
+        email: true,
+        id: true,
+        subjects: {
+          select: {
+            subject: {
+              select: {
+                name: true
+              }
+            },
+            createdAt: true
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        }
+      },
+      skip,
+      take: limit,
+      orderBy: {
+        createdAt: 'desc'
+      }
+    })
+
+    // Transform data
+    const enrollments = usersWithSubjects.map((user) => ({
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email
+      },
+      subject: user.subjects.map((sub) => ({
+        name: sub.subject.name
+      })),
+      createdAt: user.subjects[0]?.createdAt || new Date()
+    }))
+
+    // Calculate pagination details
+    const total = await this.prisma.user.count({
+      where: {
+        subjects: { some: {} }
+      }
+    })
+
+    const totalPages = Math.ceil(total / limit)
+
+    return {
+      enrollments,
+      total,
+      page,
+      limit,
+      totalPages,
+      hasPreviousPage: page > 1,
+      hasNextPage: page < totalPages
+    }
+  }
 
   async getAllUsers(
     page: number = 1,

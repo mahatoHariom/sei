@@ -8,11 +8,13 @@ import { useGetProfile } from "@/hooks/users/use-get-profile-hooks";
 import { setUserDetail } from "@/store/slices/user-detail-slice";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
+// import Cookies from "js-cookie";
 // import TestimonialsScroller from "@/components/testimonial";
 
 export default function Home() {
   const dispatch = useDispatch();
   const { id } = useSelector((state: RootState) => state.user);
+  // const token = Cookies.get("accessToken");
   const { data, isSuccess } = useGetProfile(id);
   if (isSuccess) {
     dispatch(setUserDetail && setUserDetail(data));

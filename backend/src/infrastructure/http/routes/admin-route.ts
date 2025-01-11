@@ -2,19 +2,109 @@ import { FastifyInstance } from 'fastify'
 import { TYPES } from '@/types'
 import { AdminController } from '@/app/controllers/admin-controller'
 import {
+  createCarouselSchema,
   createSubjectSchema,
+  deleteCarouselParamsSchema,
   deleteContactParamsSchema,
   deleteSubjectParamsSchema,
-  deleteUserParamsSchema, // Add this schema
+  deleteUserParamsSchema,
   editContactSchema,
   editSubjectSchema,
   getAllContactsResponseSchema,
-  getAllUsersResponseSchema
+  getAllUsersResponseSchema,
+  getEnrolledUsersResponseSchema,
+  updateCarouselSchema
 } from '@/domain/schemas/admin-schemas'
 
 export default async function adminRoutes(fastify: FastifyInstance) {
   const adminController = fastify.container.get<AdminController>(TYPES.AdminController)
 
+  fastify.get(
+    '/admin/enrolled-users',
+    {
+      schema: {
+        tags: ['Admin'],
+        response: {
+          200: getEnrolledUsersResponseSchema
+        }
+      },
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
+    },
+    adminController.getEnrolledUsers.bind(adminController)
+  )
+
+  fastify.post(
+    '/admin/carousels',
+    {
+      schema: {
+        tags: ['Admin'],
+        body: createCarouselSchema,
+        response: {
+          201: { type: 'null' }
+        }
+      },
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
+    },
+    adminController.createCarousel.bind(adminController)
+  )
+
+  // Update carousel
+  fastify.put(
+    '/admin/carousels',
+    {
+      schema: {
+        tags: ['Admin'],
+        body: updateCarouselSchema,
+        response: {
+          200: { type: 'null' }
+        }
+      },
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
+    },
+    adminController.updateCarousel.bind(adminController)
+  )
+
+  // Delete carousel
+  fastify.delete(
+    '/admin/carousels/:id',
+    {
+      schema: {
+        tags: ['Admin'],
+        params: deleteCarouselParamsSchema,
+        response: {
+          200: { type: 'null' }
+        }
+      },
+      onRequest: [fastify.authenticate, fastify.checkAdmin]
+    },
+    adminController.deleteCarousel.bind(adminController)
+  )
+
+  // Get all carousels
+  fastify.get(
+    '/admin/carousels',
+    {
+      schema: {
+        tags: ['Admin'],
+        response: {
+          200: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                id: { type: 'string' },
+                publicId: { type: 'string' },
+                url: { type: 'string' },
+                createdAt: { type: 'string', format: 'date-time' }
+              }
+            }
+          }
+        }
+      },
+      onRequest: []
+    },
+    adminController.getCarousels.bind(adminController)
+  )
   fastify.get(
     '/admin/users',
     {

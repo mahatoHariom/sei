@@ -18,6 +18,33 @@ export interface SubjectsResponse {
   hasNextPage: boolean;
 }
 
+export interface EnrolledUser {
+  id: string;
+  fullName: string;
+  email: string;
+  course: string; // Replace with the correct type if different
+  enrolledAt: string; // Use `Date` if the backend returns a proper ISO string
+}
+
+export interface EnrolledUsersResponse {
+  enrollments: {
+    createdAt: string;
+    subject: { name: string }[];
+    user: { id: string; fullName: string; email: string };
+  }[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface Carousel {
+  id: string;
+  publicId: string;
+  url: string;
+  createdAt: string;
+}
+
 export const getAllUsers = async (
   page: number,
   limit: number,
@@ -76,4 +103,42 @@ export const editSubject = async (data: {
 
 export const deleteSubject = async (subjectId: string): Promise<void> => {
   await api.delete(`/admin/subjects/${subjectId}`);
+};
+
+export const getAllEnrolledUsers = async (
+  page: number,
+  limit: number,
+  search = ""
+): Promise<EnrolledUsersResponse> => {
+  const response = await api.get<EnrolledUsersResponse>(
+    "/admin/enrolled-users",
+    {
+      params: { page, limit, search },
+    }
+  );
+  return response.data;
+};
+
+export const getAllCarousels = async (): Promise<Carousel[]> => {
+  const response = await api.get("/admin/carousels");
+  return response.data;
+};
+
+export const updateCarousel = async (data: {
+  id: string;
+  publicId: string;
+  url: string;
+}): Promise<void> => {
+  await api.put(`/admin/carousels`, data);
+};
+
+export const createCarousel = async (data: {
+  // id: string;
+  publicId: string;
+  url: string;
+}): Promise<void> => {
+  await api.post(`/admin/carousels`, data);
+};
+export const deleteCarousel = async (id: string): Promise<void> => {
+  await api.delete(`/admin/carousels/${id}`);
 };

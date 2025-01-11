@@ -1,39 +1,38 @@
 "use client";
-// import { useGetProfile } from "@/hooks/users/use-get-profile-hooks";
+// import { useEffect } from "react";
 import Carousel from "../carousel";
 import Image from "next/image";
-// import { useDispatch } from "react-redux";
-// import Cookies from "js-cookie";
-// import { setUserDetail } from "@/store/slices/userSlice";
-
-const imgPreview = [
-  "https://images.unsplash.com/photo-1709949908058-a08659bfa922?q=80&w=1200&auto=format",
-  "https://images.unsplash.com/photo-1548192746-dd526f154ed9?q=80&w=1200&auto=format",
-  "https://images.unsplash.com/photo-1693581176773-a5f2362209e6?q=80&w=1200&auto=format",
-  "https://images.unsplash.com/photo-1584043204475-8cc101d6c77a?q=80&w=1200&auto=format",
-];
+// import { useGetAllCarousels } from "@/hooks/admin"; // Assuming you'll create this hook
+import { Loader2 } from "lucide-react";
+import { useAdminGetAllCarousels } from "@/hooks/admin";
 
 const HomeCarousel = () => {
-  // const { data, isSuccess } = useGetProfile();
-  // console.log(data, "Sdfsdf");
-  // const dispatch = useDispatch();
-  // if (isSuccess) {
-  // dispatch(setUserDetail(data?.userDetail));
-  // }
+  const { data: carousels, isLoading, isError } = useAdminGetAllCarousels();
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[calc(100vh-64px)] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+
+  if (isError || !carousels?.length) {
+    return null; // Or show a fallback image/message
+  }
 
   return (
     <div className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:w-screen lg:h-[calc(100vh-64px)] relative">
       <Carousel
-        items={imgPreview.map((url, index) => (
-          <div key={index} className="w-full h-full relative">
+        items={carousels.map((carousel, index) => (
+          <div key={carousel.id} className="w-full h-full relative">
             <Image
-              src={url}
+              src={carousel.url}
               alt={`Carousel Image ${index + 1}`}
-              layout="fill"
-              objectFit="cover"
+              fill
               priority={index === 0}
               loading={index === 0 ? "eager" : "lazy"}
-              className="w-full h-full"
+              className="object-cover"
             />
           </div>
         ))}
