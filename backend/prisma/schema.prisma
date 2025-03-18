@@ -38,6 +38,8 @@ model User {
   userDetail UserDetail?   @relation("UserDetailRelation")
   contacts   Contact[]     @relation("UserContacts")
   subjects   UserSubject[]
+  PdfFile    PdfFile[]
+  Practice   Practice[]
 }
 
 model Subject {
@@ -46,6 +48,7 @@ model Subject {
   description String?
   createdAt   DateTime      @default(now())
   users       UserSubject[]
+  Practice    Practice[]
 }
 
 model UserSubject {
@@ -78,6 +81,53 @@ model ProfilePic {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   UserDetail UserDetail[]
+}
+
+model PdfFile {
+  id            String   @id @default(uuid())
+  title         String
+  description   String?
+  filename      String // Original filename
+  path          String // File path on server
+  mimetype      String
+  size          Int // File size in bytes
+  downloadCount Int      @default(0)
+  uploadedBy    User     @relation(fields: [userId], references: [id])
+  userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Practice {
+  id             String             @id @default(uuid())
+  userId         String
+  subjectId      String
+  difficulty     Difficulty
+  score          Int                @default(0)
+  totalQuestions Int
+  completed      Boolean            @default(false)
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subject        Subject            @relation(fields: [subjectId], references: [id])
+  questions      PracticeQuestion[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+model PracticeQuestion {
+  id          String   @id @default(uuid())
+  practiceId  String
+  question    String
+  options     Json // Array of options with correct answer marked
+  explanation String
+  isCorrect   Boolean? // Null until answered
+  practice    Practice @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }
 
 enum UserRole {

@@ -8,6 +8,7 @@ import {
   User2,
   School,
   PictureInPicture,
+  File,
 } from "lucide-react";
 import {
   Sidebar,
@@ -60,6 +61,11 @@ const adminItems = [
     title: "Carousels",
     url: "/admin/dashboard/all-carousel",
     icon: PictureInPicture,
+  },
+  {
+    title: "Pdfs File",
+    url: "/admin/dashboard/pdfs",
+    icon: File,
   },
 ];
 

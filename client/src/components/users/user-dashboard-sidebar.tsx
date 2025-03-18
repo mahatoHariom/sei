@@ -1,5 +1,5 @@
 "use client";
-import { Key, User, BookOpen, LogOut } from "lucide-react";
+import { Key, User, BookOpen, LogOut, Home } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -54,6 +54,10 @@ export function UserDashboardSidebar() {
     router.push(routesPath.home);
   };
 
+  const handleHome = () => {
+    router.push(routesPath.home);
+  };
+
   return (
     <Sidebar className="border-r bg-card">
       <SidebarContent>
@@ -101,7 +105,11 @@ export function UserDashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <div className="mt-auto p-4 border-t">
+        <div className="mt-auto p-4 border-t flex flex-col gap-3">
+          <Button onClick={handleHome} variant="outline" className="w-full">
+            <Home className="mr-2 h-4 w-4" />
+            <span>Home</span>
+          </Button>
           <Button
             onClick={handleLogout}
             variant="destructive"

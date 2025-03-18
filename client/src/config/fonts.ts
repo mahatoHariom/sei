@@ -1,10 +1,8 @@
-import {
-  Montserrat as FontMontserrat,
-  // Roboto as FontRoboto,
-} from "next/font/google";
+import { Montserrat } from "next/font/google";
 
-export const fontMontserrat = FontMontserrat({
+export const fontMontserrat = Montserrat({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
   variable: "--font-montserrat",
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });

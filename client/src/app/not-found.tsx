@@ -14,6 +14,7 @@ const NotFound = () => {
           scale: { duration: 2, repeat: Infinity },
         }}
       >
+        
         <Image fill src={"/error.svg"} alt="error" className="object-cover " />
       </motion.div>
     </div>

@@ -4,6 +4,7 @@ import { AchievementsSection } from "@/components/about/about-achievement";
 import { TeamSection } from "@/components/about/about-team";
 // import CounterDetailPage from "@/components/home/counter-details";
 import HomeCarousel from "@/components/home/home-carousel";
+import { HomepageStructuredData } from "@/components/global/seo";
 import { useGetProfile } from "@/hooks/users/use-get-profile-hooks";
 import { setUserDetail } from "@/store/slices/user-detail-slice";
 import { RootState } from "@/store/store";
@@ -19,7 +20,7 @@ export default function Home() {
   if (isSuccess) {
     dispatch(setUserDetail && setUserDetail(data));
   }
-  console.log(data, "all data");
+
   // const testimonials = [
   //   {
   //     userName: "Hariom  Doe",
@@ -102,6 +103,7 @@ export default function Home() {
   // ];
   return (
     <main className="flex flex-col gap-10">
+      <HomepageStructuredData />
       <HomeCarousel />
       <AboutSection hide />
       <AchievementsSection />

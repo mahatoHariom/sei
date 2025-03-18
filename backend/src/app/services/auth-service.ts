@@ -6,6 +6,7 @@ import { PrismaAuthRepository } from '@/domain/repositories/auth-repository'
 import { User } from '@prisma/client'
 import { Messages, StatusCode } from '@/domain/constants/messages'
 import { validateAccessToken } from '@/domain/utils/jwt'
+import { UserWithDetails } from '@/domain/interfaces/auth-interface'
 
 interface AuthenticateRequest {
   email: string
@@ -23,7 +24,7 @@ interface RegisterRequest {
 export class AuthService {
   constructor(@inject(TYPES.IAuthRepository) private authRepository: PrismaAuthRepository) {}
 
-  async authenticate({ email, password }: AuthenticateRequest): Promise<User | null> {
+  async authenticate({ email, password }: AuthenticateRequest): Promise<UserWithDetails | null> {
     const user = await this.authRepository.findByEmail(email)
     if (!user) {
       throw new ApiError(Messages.USER_NOT_FOUND, StatusCode.Unauthorized)

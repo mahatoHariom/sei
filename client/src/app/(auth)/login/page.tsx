@@ -51,7 +51,7 @@ const LoginPage = () => {
       </div>
 
       <div className="w-full max-w-md">
-        <div className="bg-white p-8 shadow-md rounded-lg border">
+        <div className="bg-secondary p-8 shadow-md rounded-lg border">
           <div className="flex justify-between items-center mb-6">
             <Link href={routesPath.home}>
               <Button variant="outline" size="sm">
@@ -62,7 +62,7 @@ const LoginPage = () => {
           </div>
 
           <h2 className="text-2xl font-bold text-center mb-2">Login</h2>
-          <p className="text-gray-600 text-center mb-6">
+          <p className="text-primary text-center mb-6">
             Please enter your email and password to login to your account.
           </p>
 

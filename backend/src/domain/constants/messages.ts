@@ -7,7 +7,9 @@ export const Messages = {
   INVALID_OR_TOKEN_EXPIRES: 'Invalid or token expired',
   PASSWORD_NOT_MATCHED: 'Password not matched with our database',
   USER_NOT_AUTHENTICATED: 'User not authenticated',
-  FORBIDDEN_ACCESS: 'Forbidden access'
+  FORBIDDEN_ACCESS: 'Forbidden access',
+  FILE_NOT_FOUND: 'File not found',
+  FILE_DELETE_ERROR: 'Error deleting file',
 }
 
 export enum StatusCode {

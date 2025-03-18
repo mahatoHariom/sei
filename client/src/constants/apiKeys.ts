@@ -13,7 +13,21 @@ export const apiKeys = {
   updateUserProfilePic: "updateUserProfilePic",
   unenrollFromSubject: "unenrollFromSubject",
   userCourses: "userCourses",
+  practise: {
+    getAll: "practise:getAll",
+    create: "practise:create",
+    update: "practise:update",
+    delete: "practise:delete",
+    history: "practise:history",
+  },
 
+  pdfs: {
+    getAll: "pdfs:getAll",
+    upload: "pdfs:upload",
+    download: "pdfs:download",
+    bulkDownload: "pdfs:bulkDownload",
+    delete: "pdfs:delete",
+  },
   admin: {
     getAllUsers: "admin:getAllUsers",
     deleteUser: "admin:deleteUser",

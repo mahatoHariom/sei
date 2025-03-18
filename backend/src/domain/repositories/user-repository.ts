@@ -4,6 +4,7 @@ import { IUserRepository } from '../interfaces/users-interface'
 import { CreateUserDetailInput } from '../schemas/user-schema'
 import { Prisma, User, UserDetail } from '@prisma/client'
 import { hash } from 'bcryptjs'
+import { UserWithDetails } from '../interfaces/auth-interface'
 
 @injectable()
 export class PrismaUserRepository implements IUserRepository {
@@ -17,7 +18,7 @@ export class PrismaUserRepository implements IUserRepository {
     })
   }
 
-  async completeProfile(data: CreateUserDetailInput, userId: string): Promise<User> {
+  async completeProfile(data: CreateUserDetailInput, userId: string): Promise<UserWithDetails> {
     let profilePicId: string | null = null
 
     if (data.profilePic) {

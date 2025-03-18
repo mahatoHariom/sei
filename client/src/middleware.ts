@@ -1,76 +1,100 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prefer-const */
 import { NextRequest, NextResponse } from "next/server";
+import { UserDetail } from "./types";
 
-// Define public and protected routes
-const publicRoutes = ["/login", "/register", "/"];
-const protectedRoutes = [
-  // "/course",
-  // "/contact",
-  "/user/dashboard",
-  "/admin/dashboard",
-];
+const PUBLIC_ROUTES = new Set(["/", "/about", "/contact"]);
+const AUTH_ROUTES = new Set(["/login", "/register"]);
+const VERIFICATION_ROUTE = "/complete";
+const PROTECTED_ROUTES = ["/user/dashboard", "/admin/dashboard"];
 
-const isPublicRoute = (path: string): boolean => {
-  // Check if the path exactly matches a public route or starts with one
-  return publicRoutes.some((route) => path === route || path.startsWith(route));
+type User = {
+  id: string;
+  isVerified: boolean;
+  role: string;
+  userDetail?: UserDetail;
 };
 
-const isProtectedRoute = (path: string): boolean => {
-  // Check if the path starts with any of the protected routes
-  return protectedRoutes.some((route) => path.startsWith(route));
-};
+class AuthMiddleware {
+  private request: NextRequest;
+  private pathname: string;
+  private user: User | null;
 
-const redirectTo = (path: string, request: NextRequest): NextResponse => {
-  const redirectResponse = NextResponse.redirect(new URL(path, request.url));
-  redirectResponse.headers.set("x-middleware-cache", "no-cache"); // Disable caching
-  return redirectResponse;
-};
+  constructor(request: NextRequest) {
+    this.request = request;
+    this.pathname = request.nextUrl.pathname;
+    this.user = this.parseUserFromCookie();
+  }
 
-export function middleware(request: NextRequest): NextResponse {
-  const userCookie = request.cookies.get("user")?.value;
-  let user = null;
-
-  // Parse user cookie if it exists
-  if (userCookie) {
+  private parseUserFromCookie(): User | null {
     try {
-      user = JSON.parse(userCookie);
+      const userCookie = this.request.cookies.get("user")?.value;
+      return userCookie ? JSON.parse(userCookie) : null;
     } catch (error) {
       console.error("Failed to parse user cookie:", error);
-      // Clear invalid user cookie if needed
-      const response = redirectTo("/login", request);
-      response.cookies.delete("user");
-      return response;
+      return null;
     }
   }
 
-  const { pathname } = request.nextUrl;
-
-  // Redirect unauthenticated users trying to access protected routes
-  if (!user && isProtectedRoute(pathname)) {
-    return redirectTo("/login", request);
+  private redirect(path: string): NextResponse {
+    const redirectUrl = new URL(path, this.request.url);
+    const response = NextResponse.redirect(redirectUrl);
+    response.headers.set("x-middleware-cache", "no-cache");
+    return response;
   }
 
-  // Redirect verified users away from the "/complete" page
-  if (user?.isVerified && pathname === "/complete") {
-    return redirectTo("/", request);
+  private isProtectedRoute(): boolean {
+    return PROTECTED_ROUTES.some((route) => this.pathname.startsWith(route));
   }
 
-  // Redirect unverified users trying to access protected routes to "/complete"
-  if (user && !user.isVerified && isProtectedRoute(pathname)) {
-    return redirectTo("/complete", request);
+  private isAuthRoute(): boolean {
+    return AUTH_ROUTES.has(this.pathname);
   }
 
-  // Redirect authenticated users away from auth pages (login/register)
-  if (user && ["/login", "/register"].includes(pathname)) {
-    return redirectTo("/", request);
+  private isPublicRoute(): boolean {
+    return PUBLIC_ROUTES.has(this.pathname);
   }
 
-  // Allow the request to proceed if no redirection conditions were met
-  return NextResponse.next();
+  public handleRequest(): NextResponse {
+    // Allow all routes if no user cookie exists
+    if (!this.request.cookies.has("user")) {
+      return NextResponse.next();
+    }
+
+    // Handle cases when user cookie exists
+    if (!this.user) {
+      // Invalid cookie - clear it and allow access
+      const response = NextResponse.next();
+      response.cookies.delete("user");
+      return response;
+    }
+
+    // User is authenticated but not verified
+    if (!this.user.isVerified) {
+      if (this.pathname !== VERIFICATION_ROUTE) {
+        return this.redirect(VERIFICATION_ROUTE);
+      }
+      return NextResponse.next();
+    }
+
+    // Verified user trying to access auth routes
+    if (this.isAuthRoute() || this.pathname === VERIFICATION_ROUTE) {
+      return this.redirect("/");
+    }
+
+    // Allow access to protected routes if verified
+    if (this.isProtectedRoute()) {
+      return NextResponse.next();
+    }
+
+    // Allow public routes for all users
+    return NextResponse.next();
+  }
 }
 
-// Apply middleware to all routes except those listed
+export function middleware(request: NextRequest): NextResponse {
+  const authMiddleware = new AuthMiddleware(request);
+  return authMiddleware.handleRequest();
+}
+
 export const config = {
   matcher: "/((?!api|_next/static|_next/image|favicon.ico).*)",
 };

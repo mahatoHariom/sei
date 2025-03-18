@@ -30,6 +30,20 @@ export class UserControllers {
     const refreshToken = await generateRefreshToken(updatedUser)
     const accessToken = await generateJsonWebToken(updatedUser)
 
+    reply.setCookie(
+      'user',
+      JSON.stringify({
+        updatedUser
+      }),
+      {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      }
+    )
+
     return reply.status(200).send({
       accessToken,
       refreshToken,

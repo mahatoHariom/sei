@@ -50,11 +50,11 @@ const UserDropdown: React.FC = () => {
       <DropdownMenuTrigger className="focus:outline-none">
         <div className="h-8 w-8 rounded-full overflow-hidden relative">
           <Image
-            src={userData?.profilePic?.url || ""}
+            src={userData?.profilePic?.url || "/user.jpg"}
             alt="Profile picture"
             fill
-            sizes="32px"
-            className="object-cover"
+            sizes="32px "
+            className="object-cover border p-1 border-black rounded-full"
           />
         </div>
       </DropdownMenuTrigger>

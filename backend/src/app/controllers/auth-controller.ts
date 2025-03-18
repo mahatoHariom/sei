@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
-import { inject, injectable } from 'inversify'
+import { id, inject, injectable } from 'inversify'
 import { generateJsonWebToken, generateRefreshToken } from '@/domain/utils/jwt'
 import { LoginUserInput, CreateUserInput } from '@/domain/schemas/auth-schemas'
 import { AuthService } from '../services/auth-service'
@@ -29,12 +29,47 @@ export class AuthController {
     const refreshToken = await generateRefreshToken(user)
     const accessToken = await generateJsonWebToken(user)
 
+    console.log(JSON.stringify(user), 'user')
+
+    reply.setCookie(
+      'user',
+      JSON.stringify({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        isVerified: user.isVerified,
+        userDetail: user.userDetail
+      }),
+      {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      }
+    )
+
     return reply.status(200).send({ accessToken, refreshToken, user })
   }
 
   async register(request: FastifyRequest<{ Body: CreateUserInput }>, reply: FastifyReply) {
     const { email, fullName, password, confirmPassword } = request.body
     const user = await this.authService.register({ email, fullName, password, confirmPassword })
+
+    reply.setCookie(
+      'user',
+      JSON.stringify({
+        user
+      }),
+      {
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 7 * 24 * 60 * 60 * 1000
+      }
+    )
+
     return reply.status(201).send(user)
   }
   async getProfileData(request: FastifyRequest, reply: FastifyReply) {

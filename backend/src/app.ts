@@ -46,15 +46,15 @@ const createApp = async (): Promise<FastifyInstance> => {
     //   prefix: '/uploads' // URL prefix for accessing files
     // })
     await app.register(formBody)
-    // app.register(multipart, {
-    //   limits: {
-    //     fieldNameSize: 100,
-    //     fieldSize: 1000000,
-    //     fields: 10,
-    //     fileSize: 30 * 1024 * 1024,
-    //     files: 1
-    //   }
-    // })
+    app.register(multipart, {
+      limits: {
+        fieldNameSize: 100,
+        fieldSize: 1000000,
+        fields: 10,
+        fileSize: 30 * 1024 * 1024,
+        files: 1
+      }
+    })
     await registerRoutes(app)
 
     // Set global error handler

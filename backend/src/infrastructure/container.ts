@@ -20,6 +20,16 @@ import { AdminController } from '@/app/controllers/admin-controller'
 import { AdminService } from '@/app/services/admin-service'
 import { IAdminRepository } from '@/domain/interfaces/admin.interface'
 import { PrismaAdminRepository } from '@/domain/repositories/admin-repository'
+import { PdfController } from '@/app/controllers/pdf-controller'
+import { PdfService } from '@/app/services/pdf-service'
+import { IPdfRepository } from '@/domain/interfaces/pdf-interface'
+import { PrismaPdfRepository } from '@/domain/repositories/pdf-repository'
+import { PracticeController } from '@/app/controllers/practise-controller'
+
+import { IPracticeRepository } from '@/domain/interfaces/practise.interface'
+import { PrismaPracticeRepository } from '@/domain/repositories/practise-repository'
+import { AIService } from '@/app/services/ai-service'
+import { PracticeService } from '@/app/services/practise-service'
 
 const container = new Container()
 
@@ -58,5 +68,17 @@ container.bind<AdminController>(TYPES.AdminController).to(AdminController).inSin
 container.bind<AdminService>(TYPES.AdminService).to(AdminService).inSingletonScope()
 
 container.bind<IAdminRepository>(TYPES.IAdminRepository).to(PrismaAdminRepository).inSingletonScope()
+
+// pdf
+container.bind<PdfController>(TYPES.PdfController).to(PdfController).inSingletonScope()
+
+container.bind<PdfService>(TYPES.PdfService).to(PdfService).inSingletonScope()
+
+container.bind<IPdfRepository>(TYPES.IPdfRepository).to(PrismaPdfRepository).inSingletonScope()
+
+container.bind<PracticeController>(TYPES.PracticeController).to(PracticeController).inSingletonScope()
+container.bind<PracticeService>(TYPES.PracticeService).to(PracticeService).inSingletonScope()
+container.bind<IPracticeRepository>(TYPES.IPracticeRepository).to(PrismaPracticeRepository).inSingletonScope()
+container.bind<AIService>(TYPES.AIService).to(AIService).inSingletonScope()
 
 export { container }

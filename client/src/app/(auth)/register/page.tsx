@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { routesPath } from "@/constants/routes-path";
 import { ArrowLeftIcon } from "lucide-react";
-import Image from "next/image";
+// import Image from "next/image";
 
 const SignUpForm = () => {
   const { mutate: registerUser, isPending } = useRegisterUser();
@@ -20,6 +20,7 @@ const SignUpForm = () => {
   const onSubmit = (data: SignUpFormData) => {
     registerUser(data, {
       onSuccess: () => {
+        debugger;
         router.push(routesPath.login);
         toast.success(Messages.register.success);
       },
@@ -31,7 +32,7 @@ const SignUpForm = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="mb-3">
+      {/* <div className="mb-3">
         <Image
           src="/sei-logo.jpg"
           width={100}
@@ -39,10 +40,10 @@ const SignUpForm = () => {
           alt="sei"
           className="mx-auto"
         />
-      </div>
+      </div> */}
 
       <div className="w-full max-w-md">
-        <div className="bg-white p-8 shadow-md rounded-lg border">
+        <div className="bg-primary-foreground p-8 shadow-md rounded-lg border">
           <div className="flex justify-between items-center mb-6">
             <Link href={routesPath.home}>
               <Button variant="outline" size="sm">
