@@ -14,19 +14,29 @@ export const HeroSection = () => {
     >
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1453749024858-4bca89bd9edc?q=80&w=2920&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2071&auto=format&fit=crop"
           alt="Institute Hero"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-opacity-50"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/10"></div>
       </div>
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h1 className="text-4xl md:text-5xl font-bold">
-          Welcome to SEI (Scholar Educational Institute)
-        </h1>
-        <p className="mt-4 text-lg">
-          Shaping the future through education, innovation, and research.
-        </p>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg"
+        >
+          Welcome to SEI Institute
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="mt-6 text-lg md:text-xl text-white/90 max-w-2xl drop-shadow"
+        >
+          Shaping the future through education, innovation, and excellence
+        </motion.p>
       </div>
     </motion.div>
   );

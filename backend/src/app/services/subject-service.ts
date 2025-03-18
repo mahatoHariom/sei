@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '@/types'
-import { ISubjectRepository } from '@/domain/interfaces/subject.interface'
+import { ISubjectRepository, SubjectCreateInput, SubjectUpdateInput } from '@/domain/interfaces/subject.interface'
 import { Subject } from '@prisma/client'
 
 @injectable()
@@ -8,6 +8,14 @@ export class SubjectService {
   constructor(@inject(TYPES.ISubjectRepository) private subjectRepository: ISubjectRepository) {}
   async getAllSubjects(): Promise<Subject[]> {
     return this.subjectRepository.getAllSubjects()
+  }
+
+  async createSubject(data: SubjectCreateInput): Promise<Subject> {
+    return this.subjectRepository.createSubject(data)
+  }
+
+  async updateSubject(id: string, data: SubjectUpdateInput): Promise<Subject> {
+    return this.subjectRepository.updateSubject(id, data)
   }
 
   async enrollUserInSubject(userId: string, subjectId: string) {

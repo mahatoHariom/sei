@@ -5,6 +5,7 @@ import { fontMontserrat } from "@/config/fonts";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { GlobalModal } from "@/components/global/modal/global-modal";
+import CustomCursor from "@/components/CustomCursor";
 
 export const metadata: Metadata = {
   title: "SEI Institute | Expert Bridge Courses & Exam Preparation Classes",
@@ -42,13 +43,18 @@ export const metadata: Metadata = {
   },
   viewport: "width=device-width, initial-scale=1",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html
+      lang="en"
+      suppressHydrationWarning={true}
+      suppressContentEditableWarning
+    >
       <body className={`${fontMontserrat.variable} antialiased `}>
         <ThemeProvider
           attribute="class"
@@ -59,6 +65,7 @@ export default function RootLayout({
           <Providers>
             <GlobalModal />
             <Toaster richColors position="bottom-right" />
+            <CustomCursor />
             <div className="relative flex flex-col min-h-screen">
               <main className="flex-grow">{children}</main>
             </div>

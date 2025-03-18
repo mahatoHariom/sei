@@ -46,7 +46,16 @@ model Subject {
   id          String        @id @default(uuid())
   name        String        @unique
   description String?
+  difficulty  String?       // "Beginner", "Intermediate", "Advanced"
+  duration    String?       // e.g. "8 weeks"
+  imageUrl    String?       // Course cover image URL
+  lessonsCount Int?         // Number of lessons
+  tags        String[]      // Array of tags like "Technology", "Programming"
+  isFeatured  Boolean       @default(false)
+  isNew       Boolean       @default(false)
+  rating      Float?        // Course rating
   createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   users       UserSubject[]
   Practice    Practice[]
 }
