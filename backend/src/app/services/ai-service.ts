@@ -42,7 +42,7 @@ export class AIService {
   private hf: HfInference
 
   constructor() {
-    this.hf = new HfInference('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')
+    this.hf = new HfInference(process.env.HUGGING_FACE_KEY)
   }
 
   async generateMCQs(params: { subject: string; difficulty: string; count: number }): Promise<MCQQuestion[]> {
