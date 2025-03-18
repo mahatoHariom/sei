@@ -1,18 +1,53 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { AdminDashboardSidebar } from "@/components/admin/admin-dashboard-sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import UserDashboardNavbar from "@/components/users/user-dashboard-navbar";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-screen">
-      <div className="w-64 fixed h-full z-30">
-        <AdminDashboardSidebar />
-      </div>
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-      <div className="ml-64 flex-1 flex flex-col min-h-screen">
-        <UserDashboardNavbar />
-        <main className="flex-1 p-6 overflow-auto">{children}</main>
-      </div>
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+
+    return () => {
+      window.removeEventListener("resize", checkIfMobile);
+    };
+  }, []);
+
+  return (
+    <div className="flex h-screen bg-background">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:block w-64 h-full border-r bg-card shadow-sm z-20">
+        <AdminDashboardSidebar />
+      </aside>
+
+      {/* Mobile sidebar */}
+      {isMobile && (
+        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+          <SheetContent side="left" className="p-0 w-64">
+            <AdminDashboardSidebar
+              onItemClick={() => setIsSidebarOpen(false)}
+            />
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* Main content */}
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <UserDashboardNavbar
+          onMobileMenuClick={() => setIsSidebarOpen(true)}
+          isMobile={isMobile}
+        />
+        <div className="flex-1 p-4 md:p-6 overflow-auto">{children}</div>
+      </main>
     </div>
   );
 }

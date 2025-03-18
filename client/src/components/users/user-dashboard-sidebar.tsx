@@ -1,15 +1,5 @@
 "use client";
 import { Key, User, BookOpen, LogOut, Home } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import Cookies from "js-cookie";
@@ -39,16 +29,21 @@ const items = [
   },
 ];
 
-export function UserDashboardSidebar() {
+interface UserDashboardSidebarProps {
+  onItemClick?: () => void;
+}
+
+export function UserDashboardSidebar({
+  onItemClick,
+}: UserDashboardSidebarProps) {
   const { fullName } = useSelector((state: RootState) => state.user);
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
+
   const handleLogout = () => {
     Cookies.remove("accessToken");
-    Cookies.remove("refreshToken");
     Cookies.remove("user");
-
     dispatch(clearUser());
     toast.error(Messages.logout.success);
     router.push(routesPath.home);
@@ -56,56 +51,51 @@ export function UserDashboardSidebar() {
 
   const handleHome = () => {
     router.push(routesPath.home);
+    onItemClick?.();
+  };
+
+  const handleNavigation = (url: string) => {
+    router.push(url);
+    onItemClick?.();
   };
 
   return (
-    <Sidebar className="border-r bg-card">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-4 py-2 flex flex-col  mb-6">
-            {/* Adjust margin bottom */}
-            <span className="text-lg font-bold text-destructive">
-              DASHBOARD
-            </span>
-            <span className="text-sm font-medium text-primary block mt-1">
-              Welcome {fullName}
-            </span>
-          </SidebarGroupLabel>
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-6">
+        <h2 className="text-lg font-bold text-foreground">USER DASHBOARD</h2>
+        <p className="text-sm font-medium text-muted-foreground mt-1">
+          Welcome {fullName}
+        </p>
+      </div>
 
-          <SidebarGroupContent className="mt-8">
-            <SidebarMenu className="flex flex-col gap-4">
-              {items.map((item) => {
-                const isActive = pathname === item.url;
-                return (
-                  <SidebarMenuItem
-                    key={item.title}
-                    onClick={() => router.push(item.url)}
-                  >
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        "w-full flex items-center gap-2 px-4 py-5 text-sm font-medium rounded-md transition-colors ",
-                        "hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                        isActive && "bg-accent text-accent-foreground",
-                        !isActive && "text-muted-foreground"
-                      )}
-                    >
-                      <span className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                        {isActive && (
-                          <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
-                        )}
-                      </span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+      <nav className="mt-4 flex-1">
+        <div className="flex flex-col gap-2 px-2">
+          {items.map((item) => {
+            const isActive = pathname === item.url;
+            return (
+              <Button
+                key={item.title}
+                variant={isActive ? "secondary" : "ghost"}
+                className={cn(
+                  "justify-start",
+                  isActive && "font-medium",
+                  !isActive && "text-muted-foreground"
+                )}
+                onClick={() => handleNavigation(item.url)}
+              >
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.title}
+                {isActive && (
+                  <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
+                )}
+              </Button>
+            );
+          })}
+        </div>
+      </nav>
 
-        <div className="mt-auto p-4 border-t flex flex-col gap-3">
+      <div className="mt-auto p-4 border-t">
+        <div className="flex flex-col gap-3">
           <Button onClick={handleHome} variant="outline" className="w-full">
             <Home className="mr-2 h-4 w-4" />
             <span>Home</span>
@@ -119,7 +109,7 @@ export function UserDashboardSidebar() {
             <span>Logout</span>
           </Button>
         </div>
-      </SidebarContent>
-    </Sidebar>
+      </div>
+    </div>
   );
 }

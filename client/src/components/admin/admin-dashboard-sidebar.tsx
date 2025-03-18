@@ -10,16 +10,6 @@ import {
   PictureInPicture,
   File,
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { resetState, RootState } from "@/store/store";
 import Cookies from "js-cookie";
@@ -29,7 +19,10 @@ import { Messages } from "@/constants/messages";
 import { routesPath } from "@/constants/routes-path";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
-// import { clearUser } from "@/store/slices/userSlice";
+
+interface AdminDashboardSidebarProps {
+  onItemClick?: () => void;
+}
 
 const adminItems = [
   {
@@ -69,7 +62,9 @@ const adminItems = [
   },
 ];
 
-export function AdminDashboardSidebar() {
+export function AdminDashboardSidebar({
+  onItemClick,
+}: AdminDashboardSidebarProps) {
   const { fullName } = useSelector((state: RootState) => state.user);
   const router = useRouter();
   const pathname = usePathname();
@@ -84,45 +79,45 @@ export function AdminDashboardSidebar() {
     router.push(routesPath.home);
   };
 
+  const handleNavigation = (url: string) => {
+    router.push(url);
+    onItemClick?.();
+  };
+
   return (
-    <div className="h-full bg-card border-r flex flex-col">
-      <div className="px-4 py-2 flex flex-col mb-6">
-        <span className="text-lg font-bold text-destructive">
-          ADMIN DASHBOARD
-        </span>
-        <span className="text-sm font-medium text-primary block mt-1">
+    <div className="flex flex-col h-full">
+      <div className="px-4 py-6">
+        <h2 className="text-lg font-bold text-foreground">ADMIN DASHBOARD</h2>
+        <p className="text-sm font-medium text-muted-foreground mt-1">
           Welcome {fullName}
-        </span>
+        </p>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <div className="mt-8">
-          <div className="flex flex-col gap-4">
-            {adminItems.map((item) => {
-              const isActive = pathname === item.url;
-              return (
-                <button
-                  key={item.title}
-                  onClick={() => router.push(item.url)}
-                  className={cn(
-                    "w-full flex items-center gap-2 px-4 py-5 text-sm font-medium rounded-md transition-colors relative",
-                    "hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                    isActive
-                      ? "bg-accent text-accent-foreground"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                  {isActive && (
-                    <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+      <nav className="mt-4 flex-1">
+        <div className="flex flex-col gap-2 px-2">
+          {adminItems.map((item) => {
+            const isActive = pathname === item.url;
+            return (
+              <Button
+                key={item.title}
+                variant={isActive ? "secondary" : "ghost"}
+                className={cn(
+                  "justify-start",
+                  isActive && "font-medium",
+                  !isActive && "text-muted-foreground"
+                )}
+                onClick={() => handleNavigation(item.url)}
+              >
+                <item.icon className="mr-2 h-4 w-4" />
+                {item.title}
+                {isActive && (
+                  <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
+                )}
+              </Button>
+            );
+          })}
         </div>
-      </div>
+      </nav>
 
       <div className="mt-auto p-4 border-t">
         <Button onClick={handleLogout} variant="destructive" className="w-full">
