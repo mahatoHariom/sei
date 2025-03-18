@@ -33,16 +33,71 @@ const SubjectsTable: React.FC<SubjectsTableProps> = ({
       {
         header: "Description",
         accessorKey: "description",
+        cell: ({ getValue }: any) => {
+          const description = getValue() || "";
+          return description.length > 50
+            ? `${description.substring(0, 50)}...`
+            : description;
+        },
+      },
+      {
+        header: "Difficulty",
+        accessorKey: "difficulty",
+        cell: ({ getValue }: any) => getValue() || "Not set",
+      },
+      {
+        header: "Duration",
+        accessorKey: "duration",
+        cell: ({ getValue }: any) => getValue() || "Not set",
+      },
+      {
+        header: "Course Type",
+        accessorKey: "courseType",
+        cell: ({ getValue }: any) => getValue() || "Not set",
+      },
+      {
+        header: "Tags",
+        accessorKey: "tags",
+        cell: ({ getValue }: any) => {
+          const tags = getValue();
+          return tags && tags.length > 0 ? tags.join(", ") : "None";
+        },
+      },
+      {
+        header: "Badge",
+        accessorKey: "badge",
+        cell: ({ getValue }: any) => {
+          const badge = getValue();
+
+          if (!badge) return <span className="text-gray-400">-</span>;
+
+          // Define badge colors
+          const badgeColors: Record<string, string> = {
+            New: "bg-green-100 text-green-800",
+            Featured: "bg-blue-100 text-blue-800",
+            Popular: "bg-purple-100 text-purple-800",
+            Hot: "bg-orange-100 text-orange-800",
+            Special: "bg-indigo-100 text-indigo-800",
+          };
+
+          const colorClass = badgeColors[badge] || "bg-gray-100 text-gray-800";
+
+          return (
+            <span className={`px-2 py-1 text-xs ${colorClass} rounded`}>
+              {badge}
+            </span>
+          );
+        },
+      },
+      {
+        header: "Students",
+        accessorKey: "students",
+        cell: ({ getValue }: any) => getValue() || 0,
       },
       {
         header: "Created At",
         accessorKey: "createdAt",
         cell: ({ getValue }: any) => new Date(getValue()).toLocaleDateString(),
-      },
-      {
-        header: "Users",
-        accessorKey: "users",
-        cell: ({ getValue }: any) => getValue()?.length || 0,
       },
       {
         header: "Actions",

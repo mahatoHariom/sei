@@ -85,62 +85,51 @@ export function AdminDashboardSidebar() {
   };
 
   return (
-    <Sidebar className="border-r bg-card">
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel className="px-4 py-2 flex flex-col mb-6">
-            <span className="text-lg font-bold text-destructive">
-              ADMIN DASHBOARD
-            </span>
-            <span className="text-sm font-medium text-primary block mt-1">
-              Welcome {fullName}
-            </span>
-          </SidebarGroupLabel>
+    <div className="h-full bg-card border-r flex flex-col">
+      <div className="px-4 py-2 flex flex-col mb-6">
+        <span className="text-lg font-bold text-destructive">
+          ADMIN DASHBOARD
+        </span>
+        <span className="text-sm font-medium text-primary block mt-1">
+          Welcome {fullName}
+        </span>
+      </div>
 
-          <SidebarGroupContent className="mt-8">
-            <SidebarMenu className="flex flex-col gap-4">
-              {adminItems.map((item) => {
-                const isActive = pathname === item.url;
-                return (
-                  <SidebarMenuItem
-                    key={item.title}
-                    onClick={() => router.push(item.url)}
-                  >
-                    <SidebarMenuButton
-                      asChild
-                      className={cn(
-                        "w-full flex items-center gap-2 px-4 py-5 text-sm font-medium rounded-md transition-colors",
-                        "hover:bg-accent hover:text-accent-foreground cursor-pointer",
-                        isActive && "bg-accent text-accent-foreground",
-                        !isActive && "text-muted-foreground"
-                      )}
-                    >
-                      <span className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                        {isActive && (
-                          <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
-                        )}
-                      </span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <div className="mt-auto p-4 border-t">
-          <Button
-            onClick={handleLogout}
-            variant="destructive"
-            className="w-full"
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Logout</span>
-          </Button>
+      <div className="flex-1 overflow-y-auto">
+        <div className="mt-8">
+          <div className="flex flex-col gap-4">
+            {adminItems.map((item) => {
+              const isActive = pathname === item.url;
+              return (
+                <button
+                  key={item.title}
+                  onClick={() => router.push(item.url)}
+                  className={cn(
+                    "w-full flex items-center gap-2 px-4 py-5 text-sm font-medium rounded-md transition-colors relative",
+                    "hover:bg-accent hover:text-accent-foreground cursor-pointer",
+                    isActive
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.title}</span>
+                  {isActive && (
+                    <div className="absolute left-0 w-1 h-full bg-primary rounded-r-md" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </SidebarContent>
-    </Sidebar>
+      </div>
+
+      <div className="mt-auto p-4 border-t">
+        <Button onClick={handleLogout} variant="destructive" className="w-full">
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Logout</span>
+        </Button>
+      </div>
+    </div>
   );
 }

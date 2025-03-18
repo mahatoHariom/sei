@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useEnrollInSubject, useSubjects } from "@/hooks/subjects";
-// import { SubjectRespons } from "@/types/subjects";
 import { Button } from "../ui/button";
 import { handleError } from "@/helpers/handle-error";
 import { toast } from "sonner";
@@ -33,7 +32,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
-import { SubjectsResponse } from "@/services/admin";
+import { Subject } from "@/types/subjects";
 
 const capitalizeTitle = (title: string) => {
   return title
@@ -42,24 +41,9 @@ const capitalizeTitle = (title: string) => {
     .join(" ");
 };
 
-// Course difficulty levels
-const difficultyLevels = ["Beginner", "Intermediate", "Advanced"];
-
-// Course duration ranges
-const durations = ["4 weeks", "8 weeks", "12 weeks", "16 weeks"];
-
-// Generate random ratings between 4 and 5
-const generateRating = () => (Math.random() * (5 - 4) + 4).toFixed(1);
-
-// Course images from Unsplash
-const courseImages = [
-  "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2071&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=2940&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1532619187608-e5375cab36aa?q=80&w=2070&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=2070&auto=format&fit=crop",
-];
+// Default image in case none is provided
+const defaultCourseImage =
+  "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop";
 
 interface CoursesSectionProps {
   searchQuery?: string;
@@ -78,39 +62,12 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
   const [enrollingCourseId, setEnrollingCourseId] = useState<string | null>(
     null
   );
-  const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
-  const [enhancedCourses, setEnhancedCourses] = useState<any[]>([]);
-
-  // Enhance courses with additional properties
-  useEffect(() => {
-    if (courses?.length) {
-      const enhanced = courses.map(
-        (course: SubjectsResponse, index: number) => ({
-          ...course,
-          difficulty:
-            difficultyLevels[
-              Math.floor(Math.random() * difficultyLevels.length)
-            ],
-          duration: durations[Math.floor(Math.random() * durations.length)],
-          rating: generateRating(),
-          students: Math.floor(Math.random() * 500) + 50,
-          image: courseImages[index % courseImages.length],
-          isFeatured: Math.random() > 0.7,
-          isNew: Math.random() > 0.8,
-          tags: ["Technology", "Education", "Programming"].slice(
-            0,
-            Math.floor(Math.random() * 3) + 1
-          ),
-        })
-      );
-      setEnhancedCourses(enhanced);
-    }
-  }, [courses]);
+  const [filteredCourses, setFilteredCourses] = useState<Subject[]>([]);
 
   // Filter courses based on search query and category
   useEffect(() => {
-    if (enhancedCourses?.length) {
-      let filtered = [...enhancedCourses];
+    if (courses?.length) {
+      let filtered = [...courses];
 
       // Apply search filter
       if (searchQuery) {
@@ -127,20 +84,21 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
       if (category && category !== "all") {
         if (category === "popular") {
           filtered = filtered.filter(
-            (course) => parseFloat(course.rating) >= 4.5
+            (course) => course.students && course.students > 100
           );
         } else if (category === "new") {
-          filtered = filtered.filter((course) => course.isNew);
+          filtered = filtered.filter((course) => course.badge === "New");
         } else if (category === "tech") {
           filtered = filtered.filter(
             (course) =>
-              course.tags.includes("Technology") ||
-              course.tags.includes("Programming")
+              course.courseType === "Technology" ||
+              (course.tags && course.tags.includes("Technology"))
           );
         } else if (category === "business") {
           filtered = filtered.filter(
             (course) =>
-              course.name.toLowerCase().includes("management") ||
+              course.courseType === "Business" ||
+              (course.tags && course.tags.includes("Business")) ||
               course.name.toLowerCase().includes("business")
           );
         }
@@ -148,7 +106,7 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
 
       setFilteredCourses(filtered);
     }
-  }, [enhancedCourses, searchQuery, category]);
+  }, [courses, searchQuery, category]);
 
   const handleEnroll = (subjectId: string) => {
     if (!userId || !token) {
@@ -229,121 +187,101 @@ export const CoursesSection: React.FC<CoursesSectionProps> = ({
               {/* Course image */}
               <div className="relative w-full h-48 overflow-hidden">
                 <img
-                  src={course.image}
+                  src={course.imageUrl || defaultCourseImage}
                   alt={capitalizeTitle(course.name)}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
 
-                {/* Featured or New badge */}
-                {(course.isFeatured || course.isNew) && (
+                {/* Badge if available */}
+                {course.badge && (
                   <div className="absolute top-3 right-3">
-                    {course.isNew && (
-                      <Badge className="bg-green-500 hover:bg-green-600 mr-2">
-                        New
-                      </Badge>
-                    )}
-                    {course.isFeatured && (
-                      <Badge className="bg-amber-500 hover:bg-amber-600">
-                        Featured
-                      </Badge>
-                    )}
+                    <Badge
+                      className={
+                        course.badge === "New"
+                          ? "bg-green-500 hover:bg-green-600"
+                          : course.badge === "Featured"
+                          ? "bg-amber-500 hover:bg-amber-600"
+                          : course.badge === "Popular"
+                          ? "bg-purple-500 hover:bg-purple-600"
+                          : "bg-blue-500 hover:bg-blue-600"
+                      }
+                    >
+                      {course.badge}
+                    </Badge>
                   </div>
                 )}
-
-                {/* Difficulty badge */}
-                <div className="absolute bottom-3 left-3">
-                  <Badge
-                    variant="secondary"
-                    className="bg-black/60 hover:bg-black/70 text-white backdrop-blur-sm"
-                  >
-                    {course.difficulty}
-                  </Badge>
-                </div>
               </div>
 
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">
                     {capitalizeTitle(course.name)}
                   </CardTitle>
-                  <div className="flex items-center text-yellow-500">
-                    <Star className="fill-current w-4 h-4 mr-1" />
-                    <span className="text-sm font-medium">{course.rating}</span>
-                  </div>
                 </div>
-                <CardDescription className="line-clamp-2 h-10">
-                  {course.description ||
-                    "Learn essential skills and concepts in this comprehensive course"}
-                </CardDescription>
+                {course.courseType && (
+                  <Badge variant="outline" className="mt-1">
+                    {course.courseType}
+                  </Badge>
+                )}
               </CardHeader>
 
-              <CardContent className="pb-4 flex-grow">
-                <div className="grid grid-cols-2 gap-y-2 text-sm">
-                  <div className="flex items-center text-muted-foreground">
-                    <Clock className="w-4 h-4 mr-2" />
-                    <span>{course.duration}</span>
-                  </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <Users className="w-4 h-4 mr-2" />
-                    <span>{course.students} students</span>
-                  </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    <span>{Math.floor(Math.random() * 20) + 5} lessons</span>
-                  </div>
-                  <div className="flex items-center text-muted-foreground">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    <span>{course.difficulty}</span>
-                  </div>
+              <CardContent className="py-0 flex-grow">
+                {course.description && (
+                  <CardDescription className="line-clamp-3 mb-4">
+                    {course.description}
+                  </CardDescription>
+                )}
+
+                <div className="grid grid-cols-2 gap-2 text-sm mb-1">
+                  {course.difficulty && (
+                    <div className="flex items-center gap-1">
+                      <BarChart3 className="w-4 h-4 text-muted-foreground" />
+                      <span>{course.difficulty}</span>
+                    </div>
+                  )}
+                  {course.duration && (
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
+                      <span>{course.duration}</span>
+                    </div>
+                  )}
+                  {course.students !== undefined && (
+                    <div className="flex items-center gap-1">
+                      <Users className="w-4 h-4 text-muted-foreground" />
+                      <span>{course.students} students</span>
+                    </div>
+                  )}
                 </div>
 
-                {/* Course tags */}
-                <ScrollArea className="h-6 mt-4 whitespace-nowrap">
-                  <div className="flex gap-2">
-                    {course.tags.map((tag: string, tagIndex: number) => (
-                      <Badge
-                        key={tagIndex}
-                        variant="outline"
-                        className="text-xs"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </ScrollArea>
+                {course.tags && course.tags.length > 0 && (
+                  <ScrollArea className="h-8 whitespace-nowrap mt-3">
+                    <div className="flex gap-1">
+                      {course.tags.map((tag, i) => (
+                        <Badge key={i} variant="secondary" className="mr-1">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                )}
               </CardContent>
 
-              <CardFooter className="pt-2 border-t mt-auto">
+              <CardFooter className="pt-4 mt-auto">
                 <Button
                   className="w-full"
-                  variant={
-                    course.users?.find(
-                      (user: { userId: string }) => user.userId === userId
-                    )
-                      ? "outline"
-                      : "default"
-                  }
                   onClick={() => handleEnroll(course.id)}
-                  disabled={
-                    !!course.users?.find(
-                      (user: { userId: string }) => user.userId === userId
-                    ) || enrollingCourseId === course.id
-                  }
+                  disabled={isEnrolling && enrollingCourseId === course.id}
                 >
-                  {enrollingCourseId === course.id ? (
+                  {isEnrolling && enrollingCourseId === course.id ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Enrolling...
                     </>
-                  ) : course.users?.find(
-                      (user: { userId: string }) => user.userId === userId
-                    ) ? (
-                    <>
-                      <Award className="w-4 h-4 mr-2" />
-                      Already Enrolled
-                    </>
                   ) : (
-                    "Enroll Now"
+                    <>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Enroll Now
+                    </>
                   )}
                 </Button>
               </CardFooter>

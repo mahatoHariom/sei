@@ -8,8 +8,8 @@ interface UsersResponse {
   totalUsers: number;
 }
 
-export interface SubjectsResponse {
-  subjects: Subject[];
+export interface CoursesResponse {
+  courses: Subject[];
   total: number;
   page: number;
   limit: number;
@@ -84,25 +84,31 @@ export const deleteContact = async (contactId: string): Promise<void> => {
 
 export const getAllSubjects = async (): Promise<Subject[]> => {
   const response = await api.get("/subjects");
-  return response.data;
+  console.log("Subjects response:", response.data);
+
+  const subjects = response.data.map((subject: any) => ({
+    ...subject,
+    badge: subject.badge || "",
+    tags: Array.isArray(subject.tags) ? subject.tags : [],
+    students: typeof subject.students === "number" ? subject.students : 0,
+  }));
+
+  return subjects;
 };
 
-export const createSubject = async (data: {
-  name: string;
-  description?: string;
-}): Promise<void> => {
+export const createCourse = async (data: Partial<Subject>): Promise<void> => {
   await api.post("/admin/subjects", data);
 };
 
-export const editSubject = async (data: {
-  subjectId: string;
-  updates: { name: string; description: string };
+export const editCourse = async (data: {
+  courseId: string;
+  updates: Partial<Subject>;
 }): Promise<void> => {
-  await api.put(`/admin/subjects/${data.subjectId}`, data.updates);
+  await api.put(`/admin/subjects/${data.courseId}`, data.updates);
 };
 
-export const deleteSubject = async (subjectId: string): Promise<void> => {
-  await api.delete(`/admin/subjects/${subjectId}`);
+export const deleteCourse = async (courseId: string): Promise<void> => {
+  await api.delete(`/admin/subjects/${courseId}`);
 };
 
 export const getAllEnrolledUsers = async (

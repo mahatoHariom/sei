@@ -7,9 +7,9 @@ import {
   getAllContacts,
   editContact,
   deleteContact,
-  editSubject,
-  deleteSubject,
-  createSubject,
+  editCourse,
+  deleteCourse,
+  createCourse,
   getAllSubjects,
   getAllEnrolledUsers,
   getAllCarousels,
@@ -103,9 +103,9 @@ export const useGetAllSubjects = () => {
   });
 };
 
-export const useCreateSubject = () => {
+export const usecreateCourse = () => {
   return useMutation({
-    mutationFn: createSubject,
+    mutationFn: createCourse,
     mutationKey: [apiKeys.admin.createSubject],
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -115,9 +115,9 @@ export const useCreateSubject = () => {
   });
 };
 
-export const useEditSubject = () => {
+export const useeditCourse = () => {
   return useMutation({
-    mutationFn: editSubject,
+    mutationFn: editCourse,
     mutationKey: [apiKeys.admin.editSubject],
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -127,9 +127,9 @@ export const useEditSubject = () => {
   });
 };
 
-export const useDeleteSubject = () => {
+export const usedeleteCourse = () => {
   return useMutation({
-    mutationFn: deleteSubject,
+    mutationFn: deleteCourse,
     mutationKey: [apiKeys.admin.deleteSubject],
     onSuccess: () => {
       queryClient.invalidateQueries({

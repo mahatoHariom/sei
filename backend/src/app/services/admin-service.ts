@@ -87,8 +87,38 @@ export class AdminService {
     return this.adminRepository.deleteContact({ contactId })
   }
 
-  async createSubject({ name, description }: { name: string; description: string }): Promise<void> {
-    return this.adminRepository.createSubject({ name, description })
+  async createSubject({
+    name,
+    description,
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
+  }: {
+    name: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
+  }): Promise<void> {
+    return this.adminRepository.createSubject({
+      name,
+      description,
+      difficulty,
+      duration,
+      imageUrl,
+      courseType,
+      tags,
+      badge,
+      students
+    })
   }
 
   async deleteUser({ userId }: { userId: string }): Promise<void> {
@@ -99,14 +129,39 @@ export class AdminService {
   }
 
   async editSubject({
+    subjectId,
     name,
     description,
-    subjectId
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
   }: {
-    name: string
-    description: string
     subjectId: string
+    name?: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
   }): Promise<void> {
-    return this.adminRepository.editSubject({ name, description, subjectId })
+    return this.adminRepository.editSubject({
+      subjectId,
+      name,
+      description,
+      difficulty,
+      duration,
+      imageUrl,
+      courseType,
+      tags,
+      badge,
+      students
+    })
   }
 }

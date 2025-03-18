@@ -1,14 +1,14 @@
 import React from "react";
 import { Dialog, DialogContent, DialogOverlay } from "../ui/dialog";
 
-interface DeleteSubjectModalProps {
+interface DeleteCourseModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: () => void;
   isDeleting: boolean;
 }
 
-const DeleteSubjectModal: React.FC<DeleteSubjectModalProps> = ({
+const DeleteCourseModal: React.FC<DeleteCourseModalProps> = ({
   isOpen,
   onClose,
   onDelete,
@@ -28,7 +28,7 @@ const DeleteSubjectModal: React.FC<DeleteSubjectModalProps> = ({
           Confirm Deletion
         </h2>
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this subject? This action cannot be
+          Are you sure you want to delete this course? This action cannot be
           undone.
         </p>
         <div className="flex justify-end space-x-3">
@@ -51,4 +51,4 @@ const DeleteSubjectModal: React.FC<DeleteSubjectModalProps> = ({
   );
 };
 
-export default DeleteSubjectModal;
+export default DeleteCourseModal;

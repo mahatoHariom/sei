@@ -2,6 +2,13 @@ export interface Subject {
   id: string;
   name: string;
   description?: string;
+  difficulty?: string;
+  duration?: string;
+  imageUrl?: string;
+  courseType?: string;
+  tags?: string[];
+  badge?: string;
+  students?: number;
   createdAt: string;
   users?: [
     {

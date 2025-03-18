@@ -1,19 +1,26 @@
 import { Prisma, Subject } from '@prisma/client'
 import { injectable } from 'inversify'
 import { PrismaService } from '@/app/services/prisma-service'
-import { ISubjectRepository } from '../interfaces/subject.interface'
+import { ISubjectRepository, SubjectCreateInput, SubjectUpdateInput } from '../interfaces/subject.interface'
 
 @injectable()
 export class PrismaSubjectRepository implements ISubjectRepository {
   private readonly prisma = PrismaService.getClient()
-
   async getAllSubjects(): Promise<Subject[]> {
     return this.prisma.subject.findMany({
       select: {
         id: true,
         createdAt: true,
+        updatedAt: true,
         description: true,
         name: true,
+        difficulty: true,
+        duration: true,
+        imageUrl: true,
+        courseType: true,
+        tags: true,
+        badge: true,
+        students: true,
         users: {
           select: { userId: true }
         }

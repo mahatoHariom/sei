@@ -267,11 +267,38 @@ export class PrismaAdminRepository implements IAdminRepository {
     })
   }
 
-  async createSubject({ name, description }: { name: string; description: string }): Promise<void> {
+  async createSubject({
+    name,
+    description,
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
+  }: {
+    name: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
+  }): Promise<void> {
     await this.prisma.subject.create({
       data: {
         name,
-        description
+        description,
+        difficulty,
+        duration,
+        imageUrl,
+        courseType,
+        tags,
+        badge,
+        students
       }
     })
   }
@@ -291,14 +318,44 @@ export class PrismaAdminRepository implements IAdminRepository {
       }
     })
   }
-  async editSubject({ subjectId, name, description }: { subjectId: string; name: string; description: string }) {
+
+  async editSubject({
+    subjectId,
+    name,
+    description,
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
+  }: {
+    subjectId: string
+    name?: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
+  }): Promise<void> {
     await this.prisma.subject.update({
       where: {
         id: subjectId
       },
       data: {
-        name,
-        description
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(difficulty !== undefined && { difficulty }),
+        ...(duration !== undefined && { duration }),
+        ...(imageUrl !== undefined && { imageUrl }),
+        ...(courseType !== undefined && { courseType }),
+        ...(tags !== undefined && { tags }),
+        ...(badge !== undefined && { badge }),
+        ...(students !== undefined && { students })
       }
     })
   }

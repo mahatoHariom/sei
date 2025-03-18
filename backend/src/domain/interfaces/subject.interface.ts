@@ -6,11 +6,10 @@ export interface SubjectCreateInput {
   difficulty?: string
   duration?: string
   imageUrl?: string
-  lessonsCount?: number
+  courseType?: string
   tags?: string[]
-  isFeatured?: boolean
-  isNew?: boolean
-  rating?: number
+  badge?: string
+  students?: number
 }
 
 export interface SubjectUpdateInput {
@@ -19,19 +18,18 @@ export interface SubjectUpdateInput {
   difficulty?: string
   duration?: string
   imageUrl?: string
-  lessonsCount?: number
+  courseType?: string
   tags?: string[]
-  isFeatured?: boolean
-  isNew?: boolean
-  rating?: number
+  badge?: string
+  students?: number
 }
 
 export interface ISubjectRepository {
   getAllSubjects(): Promise<Subject[]>
 
-  createSubject(data: SubjectCreateInput): Promise<Subject>
+  // createSubject(data: SubjectCreateInput): Promise<Subject>
 
-  updateSubject(id: string, data: SubjectUpdateInput): Promise<Subject>
+  // updateSubject(id: string, data: SubjectUpdateInput): Promise<Subject>
 
   createUserSubjectEnrollment(userId: string, subjectId: string): Promise<void>
 

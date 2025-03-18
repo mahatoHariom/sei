@@ -155,26 +155,72 @@ export class AdminController {
     reply.status(200).send()
   }
 
-  async createSubject(request: FastifyRequest<{ Body: { name: string; description: string } }>, reply: FastifyReply) {
-    const { name, description } = request.body
-    const data = await this.adminService.createSubject({
+  async createSubject(
+    request: FastifyRequest<{
+      Body: {
+        name: string
+        description?: string
+        difficulty?: string
+        duration?: string
+        imageUrl?: string
+        courseType?: string
+        tags?: string[]
+        badge?: string
+        students?: number
+      }
+    }>,
+    reply: FastifyReply
+  ) {
+    const { name, description, difficulty, duration, imageUrl, courseType, tags, badge, students } = request.body
+
+    await this.adminService.createSubject({
       name,
-      description
+      description,
+      difficulty,
+      duration,
+      imageUrl,
+      courseType,
+      tags,
+      badge,
+      students
     })
+
     reply.status(200).send()
   }
 
   async editSubject(
-    request: FastifyRequest<{ Body: { name: string; description: string }; Params: { subjectId: string } }>,
+    request: FastifyRequest<{
+      Body: {
+        name?: string
+        description?: string
+        difficulty?: string
+        duration?: string
+        imageUrl?: string
+        courseType?: string
+        tags?: string[]
+        badge?: string
+        students?: number
+      }
+      Params: { subjectId: string }
+    }>,
     reply: FastifyReply
   ) {
-    const { name, description } = request.body
+    const { name, description, difficulty, duration, imageUrl, courseType, tags, badge, students } = request.body
     const { subjectId } = request.params
-    const data = await this.adminService.editSubject({
+
+    await this.adminService.editSubject({
+      subjectId,
       name,
       description,
-      subjectId
+      difficulty,
+      duration,
+      imageUrl,
+      courseType,
+      tags,
+      badge,
+      students
     })
+
     reply.status(200).send()
   }
 

@@ -56,9 +56,32 @@ export interface IAdminRepository {
     hasNextPage: boolean
   }>
 
-  createSubject({ name, description }: { name: string; description: string }): Promise<void>
+  createSubject({
+    name,
+    description,
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
+  }: {
+    name: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
+  }): Promise<void>
+
   deleteSubject({ subjectId }: { subjectId: string }): Promise<void>
+
   deleteUser({ userId }: { userId: string }): Promise<void>
+
   editContact({
     contactId,
     name,
@@ -75,5 +98,27 @@ export interface IAdminRepository {
 
   deleteContact({ contactId }: { contactId: string }): Promise<void>
 
-  editSubject({ subjectId, name, description }: { subjectId: string; name: string; description: string }): Promise<void>
+  editSubject({
+    subjectId,
+    name,
+    description,
+    difficulty,
+    duration,
+    imageUrl,
+    courseType,
+    tags,
+    badge,
+    students
+  }: {
+    subjectId: string
+    name?: string
+    description?: string
+    difficulty?: string
+    duration?: string
+    imageUrl?: string
+    courseType?: string
+    tags?: string[]
+    badge?: string
+    students?: number
+  }): Promise<void>
 }

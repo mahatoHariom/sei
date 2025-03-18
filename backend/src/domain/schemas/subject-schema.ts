@@ -9,11 +9,10 @@ export const subjectSchema = Type.Object({
   difficulty: Type.Optional(Type.String()),
   duration: Type.Optional(Type.String()),
   imageUrl: Type.Optional(Type.String()),
-  lessonsCount: Type.Optional(Type.Integer()),
+  courseType: Type.Optional(Type.String()),
   tags: Type.Optional(Type.Array(Type.String())),
-  isFeatured: Type.Optional(Type.Boolean()),
-  isNew: Type.Optional(Type.Boolean()),
-  rating: Type.Optional(Type.Number()),
+  badge: Type.Optional(Type.String()),
+  students: Type.Optional(Type.Number()),
   createdAt: Type.String({ format: 'date-time' }),
   updatedAt: Type.Optional(Type.String({ format: 'date-time' })),
   users: Type.Array(
@@ -30,11 +29,10 @@ export const subjectInputSchema = Type.Object({
   difficulty: Type.Optional(Type.String()),
   duration: Type.Optional(Type.String()),
   imageUrl: Type.Optional(Type.String()),
-  lessonsCount: Type.Optional(Type.Integer()),
+  courseType: Type.Optional(Type.String()),
   tags: Type.Optional(Type.Array(Type.String())),
-  isFeatured: Type.Optional(Type.Boolean()),
-  isNew: Type.Optional(Type.Boolean()),
-  rating: Type.Optional(Type.Number())
+  badge: Type.Optional(Type.String()),
+  students: Type.Optional(Type.Number())
 })
 
 // Response schema for a single subject

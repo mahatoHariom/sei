@@ -1,16 +1,41 @@
 "use client";
 
 import React from "react";
-import { SidebarTrigger } from "../ui/sidebar";
 import { ModeToggle } from "../global/theme-toggle";
+import { cn } from "@/lib/utils";
+import { User, Bell } from "lucide-react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-const UserDashboardNavbar: React.FC = () => {
+interface UserDashboardNavbarProps {
+  className?: string;
+}
+
+const UserDashboardNavbar: React.FC<UserDashboardNavbarProps> = ({
+  className,
+}) => {
+  const { fullName } = useSelector((state: RootState) => state.user);
+
   return (
-    <div className="flex justify-between border-b py-4 px-3">
+    <div
+      className={cn(
+        "flex justify-between items-center h-16 border-b px-6",
+        className
+      )}
+    >
       <div>
-        <SidebarTrigger />
+        <h2 className="text-lg font-medium">Dashboard</h2>
       </div>
-      <ModeToggle />
+      <div className="flex items-center gap-4">
+        <ModeToggle />
+        <div className="flex items-center gap-2">
+          <Bell className="h-5 w-5 text-muted-foreground" />
+          <div className="flex items-center gap-2">
+            <User className="h-5 w-5 text-muted-foreground" />
+            <span className="text-sm hidden md:inline-block">{fullName}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
