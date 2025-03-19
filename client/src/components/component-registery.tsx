@@ -1,6 +1,7 @@
 "use client";
 import { ModalContentKey } from "@/types/modal-keys";
 import { SignUpForm } from "./auth/signup-form";
+import { JSX } from "react";
 
 const componentRegistry: Partial<Record<ModalContentKey, () => JSX.Element>> = {
   [ModalContentKey.SignUpForm]: SignUpForm,
