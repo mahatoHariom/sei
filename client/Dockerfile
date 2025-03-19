@@ -1,40 +1,54 @@
-# Step 1: Use the base node image
 FROM node:20-alpine AS base
 
-# Step 2: Install dependencies only when needed (this is done in a separate stage to optimize caching)
+# Install dependencies only when needed
 FROM base AS deps
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm install
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
 
-# Step 3: Rebuild the source code (copy source code and build it)
+# Install dependencies
+RUN npm ci
+
+# Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Environment variables must be present at build time
-ENV NEXT_PUBLIC_API_BASE_URL=http://localhost:9000/api/v1
-ENV NODE_ENV=production
+# Set environment variables
+ARG NEXT_PUBLIC_API_BASE_URL
+ARG NEXT_PUBLIC_IMAGE_BASE_URL
+ARG NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ARG NEXT_PUBLIC_CLOUDINARY_API_KEY
+ARG NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
 
-# Build the application (it runs npm run build)
+ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
+ENV NEXT_PUBLIC_IMAGE_BASE_URL=$NEXT_PUBLIC_IMAGE_BASE_URL
+ENV NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=$NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+ENV NEXT_PUBLIC_CLOUDINARY_API_KEY=$NEXT_PUBLIC_CLOUDINARY_API_KEY
+ENV NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=$NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+
+# Build the application
 RUN npm run build
 
-# Step 4: Production image, copy the built application and all necessary files
+# Production image, copy all the files and run next
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy built application and necessary assets from the builder stage
-COPY --from=builder /app/.next ./.next
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
 
 EXPOSE 3000
 
-# The container should run the "dev" script in production (change this to "start" in production mode)
-CMD ["npm", "run", "start"]
+ENV PORT 3000
+
+CMD ["node", "server.js"] 

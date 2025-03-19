@@ -1,51 +1,42 @@
-name: Deploy to VPS
+name: Deploy Next.js App
+
 on:
   push:
     branches:
-      - main
+      - main # Deploy when changes are pushed to main branch
+  workflow_dispatch: # Allow manual triggering
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-#     steps:
-#       # Checkout the repo
-#       - name: Checkout code
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-#       # Set up Node.js
-#       - name: Set up Node.js
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: '18'
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-#       # Install dependencies
-#       - name: Install dependencies
-#         run: npm install --frozen-lockfile
+      - name: Add SSH known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 37.27.247.208 >> ~/.ssh/known_hosts
 
-#       # Build the app
-#       - name: Build the app
-#         run: npm run build
+      - name: Create .env file
+        run: |
+          echo "NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}" > .env.production
+          echo "NEXT_PUBLIC_IMAGE_BASE_URL=${{ secrets.NEXT_PUBLIC_IMAGE_BASE_URL }}" >> .env.production
+          echo "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=${{ secrets.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}" >> .env.production
+          echo "NEXT_PUBLIC_CLOUDINARY_API_KEY=${{ secrets.NEXT_PUBLIC_CLOUDINARY_API_KEY }}" >> .env.production
+          echo "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=${{ secrets.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET }}" >> .env.production
 
-#       # Package the app into a Docker image
-#       - name: Build Docker image
-#         run: docker build -t my-nextjs-app .
+      - name: Deploy to server
+        run: |
+          # Sync code to server
+          rsync -avz --exclude 'node_modules' --exclude '.next' --exclude '.git' ./ root@37.27.247.208:/root/sei-institute/client/
 
-#       # Push Docker image to a registry (e.g., DockerHub, GitHub Packages)
-#       - name: Log in to DockerHub
-#         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
-#       - name: Push Docker image
-#         run: docker tag my-nextjs-app ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
-#         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
-
-#       # SSH into the VPS and deploy the app
-#       - name: SSH into VPS and deploy
-#         uses: appleboy/ssh-action@master
-#         with:
-#           host: ${{ secrets.VPS_HOST }}
-#           username: ${{ secrets.VPS_USER }}
-#           password: ${{ secrets.VPS_PASSWORD }}
-#           script: |
-#             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
-#             docker stop my-nextjs-app || true
-#             docker rm my-nextjs-app || true
-#             docker run -d -p 80:3000 --name my-nextjs-app ${{ secrets.DOCKERHUB_USERNAME }}/my-nextjs-app:latest
+          # Execute deploy commands on server
+          ssh root@37.27.247.208 "cd /root/sei-institute/client && \
+          docker-compose down || true && \
+          docker-compose up -d --build"
